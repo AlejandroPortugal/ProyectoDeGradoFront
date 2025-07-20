@@ -1,12 +1,20 @@
 import React, { useState, useContext, useEffect } from 'react';
+
 import './Menu.css';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/icons/logo.svg';
 import iconHome from '../assets/icons/home-2.svg';
+import iconEntrevista from '../assets/icons/UserCheck.svg'
 import userIcon from '../assets/icons/user.svg';
 import rowIcon from '../assets/icons/Vector.svg';
 import iconInfo from '../assets/icons/File.svg';
 import AuthContext from '../auth.jsx';  // Importa el contexto de autenticación
+import iconAdd from '../assets/icons/add.svg'
+import iconEdit from '../assets/icons/Edit.svg'
+import iconDelete from '../assets/icons/delete.svg'
+import notificationIcon from '../assets/icons/notifications.svg';
+import iconFile from '../assets/icons/File.svg'
+import iconCheck from '../assets/icons/UserCheck.svg'
 
 const Menu = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -99,7 +107,7 @@ const Menu = () => {
                 <Link to="/agregar" className="sidebar-link">
                   Agregar nuevo Usuario
                   <i className="Icon-container-menu">
-                    <img src={userIcon} alt='Agregar Usuario' />
+                    <img src={iconAdd} alt='Agregar Usuario' />
                   </i>
                 </Link>
               </li>
@@ -108,7 +116,7 @@ const Menu = () => {
                 <Link to="/editar" className="sidebar-link">
                   Editar un Usuario
                   <i className="Icon-container-menu">
-                    <img src={userIcon} alt='Editar Usuario' />
+                    <img src={iconEdit} alt='Editar Usuario' />
                   </i>
                 </Link>
               </li>
@@ -117,7 +125,7 @@ const Menu = () => {
                 <Link to="/ingresos" className="sidebar-link">
                   Control de ingresos
                   <i className="Icon-container-menu">
-                    <img src={userIcon} alt='Control de Ingresos' />
+                    <img src={iconFile} alt='Control de Ingresos' />
                   </i>
                 </Link>
               </li>
@@ -125,10 +133,10 @@ const Menu = () => {
                 <Link to="/usuariosRecuperados" className="sidebar-link">
                   Recuperacion de Usuarios
                   <i className="Icon-container-menu">
-                    <img src={userIcon} alt='Control de Ingresos' />
+                    <img src={iconCheck} alt='Control de Ingresos' />
                   </i>
                 </Link>
-              </li>
+              </li> 
             </ul>
           )}
 
@@ -178,7 +186,7 @@ const Menu = () => {
                 <Link to="/listaEntrevistas" className="sidebar-link">
                   Entrevistas
                   <i className='Icon-container-menu'>
-                    <img src={iconHome} alt='Home' />
+                    <img src={iconEntrevista} alt='Home' />
                   </i>
                 </Link>
               </div>
@@ -208,22 +216,35 @@ const Menu = () => {
               <li className='sidebar-container'>
                 <Link to="/crearActa" className="sidebar-link">
                   Crear Acta
+                  <i className='Icon-container-menu'>
+                    <img src={iconAdd} alt='Home' />
+                  </i>
                 </Link>
+                
               </li>
              
               <li className='sidebar-container'>
                 <Link to="/editarActa" className="sidebar-link">
                   Editar una acta
+                  <i className='Icon-container-menu'>
+                    <img src={iconEdit} alt='Home' />
+                  </i>
                 </Link>
               </li>
               <li className='sidebar-container'>
                 <Link to="/eliminaracta" className="sidebar-link">
                   Eliminar acta
+                  <i className='Icon-container-menu'>
+                    <img src={iconDelete} alt='Home' />
+                  </i>
                 </Link>
               </li>
               <li className='sidebar-container'>
                 <Link to="/psicologoListPadres" className="sidebar-link">
                   Citar a Padres
+                  <i className='Icon-container-menu'>
+                    <img src={notificationIcon} alt='Home' />
+                  </i>
                 </Link>
               </li>
               

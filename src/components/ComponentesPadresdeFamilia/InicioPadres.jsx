@@ -12,7 +12,7 @@ const InicioPadres = () => {
   return (
     <div className="inicio-padres-container">
       <MenuPadres />
-      <h1 className="titulo-principal">BIENVENIDO A LA PAGINA DEL IDEB</h1>
+      <h1 className="titulo-principal">BIENVENIDO ALEJANDRO! A LA PAGINA DEL IDEB</h1>
 
       {/* Sección de información principal */}
       <div className="contenido">

@@ -9,7 +9,6 @@ import UserManagementForm from './pages/UserManagementForm.jsx';
 import UserProfesorHome from './pages/UserProfesorHome.jsx';
 import Unauthorized from './components/Unauthorized'; // Asegúrate de crear o importar este componente
 import FormActas from './components/ComponentsProfesores/FormActas.jsx';
-
 import InicioProfesores from './components/ComponentsProfesores/InicioProfesores.jsx';
 import UserListPadres from './pages/UserListPadres.jsx';
 import CitarPadres from './components/ComponentsProfesores/CitarPadres.jsx';
