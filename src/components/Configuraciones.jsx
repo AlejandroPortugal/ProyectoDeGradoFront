@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './Configuraciones.css';
-import Header from './Header';
 import {
     getAdministradorById,
     putAdministrador,
-} from '../service/administrador.service.jsx';
-import { getPadreById, putPadre } from '../service/PadreDeFamilia.jsx';
-import { getProfesorById, putProfesor } from '../service/profesor.service.jsx';
-import { getPsicologoById, putPsicologo } from '../service/psicologo.service.jsx';
+} from '../servicios/administrador.service.jsx';
+import { getPadreById, putPadre } from '../servicios/PadreDeFamilia.jsx';
+import { getProfesorById, putProfesor } from '../servicios/profesor.service.jsx';
+import { getPsicologoById, putPsicologo } from '../servicios/psicologo.service.jsx';
 import Toast from './Toast';
-import eyeIcon from '../assets/icons/Eye.svg';
+import eyeIcon from '../recursos/icons/Eye.svg';
 
 
 
@@ -190,12 +189,66 @@ const Configuraciones = () => {
 
 
 
+    const detectedRole = formData.rol || userRole;
+    const roleDescription = {
+        Administrador: 'Gestiona accesos, roles y la configuración general del sistema.',
+        Profesor: 'Actualiza tus datos y administra la información de tu aula.',
+        'Padre de Familia': 'Mantén tus datos al día para recibir las notificaciones y reportes.',
+        Psicólogo: 'Asegura la confidencialidad de tus entrevistas manteniendo tu perfil actualizado.',
+    }[detectedRole] || 'Actualiza tus datos personales y de acceso cuando lo necesites.';
+    
     return (
-        <>
-            <Header
-                title="Configuraciones"
-                subtitle="Cambia o configura tu perfil con tus datos actuales"
-            />
+        <main className="configuraciones-page">
+            <section className="configuraciones-hero">
+                <div className="configuraciones-hero__copy">
+                    <span className="configuraciones-hero__eyebrow">Centro de configuración</span>
+                    <h2>Gestiona tu perfil y seguridad con confianza</h2>
+                    <p>{roleDescription}</p>
+                    <div className="configuraciones-hero__meta">
+                        <span className="configuraciones-hero__chip">
+                            Rol asignado: <strong>{detectedRole || 'Sin rol'}</strong>
+                        </span>
+                        <span className="configuraciones-hero__chip">
+                            Última actualización: <strong>{new Date().toLocaleDateString()}</strong>
+                        </span>
+                        <span className="configuraciones-hero__chip">
+                            Estado de contraseña: <strong>{enablePasswordFields ? 'En edición' : 'Sin cambios'}</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div className="configuraciones-hero__stats">
+                    <article className="configuraciones-hero__stat-card">
+                        <span className="configuraciones-hero__stat-count">{formData.nombres ? '✓' : '-'}</span>
+                        <span className="configuraciones-hero__stat-label">Datos personales</span>
+                    </article>
+                    <article className="configuraciones-hero__stat-card">
+                        <span className="configuraciones-hero__stat-count">{detectedRole ? '✓' : '-'}</span>
+                        <span className="configuraciones-hero__stat-label">Rol activo</span>
+                    </article>
+                    <article className="configuraciones-hero__stat-card">
+                        <span className="configuraciones-hero__stat-count">
+                            {enablePasswordFields ? '…' : '✓'}
+                        </span>
+                        <span className="configuraciones-hero__stat-label">Seguridad</span>
+                    </article>
+                </div>
+
+                <div className="configuraciones-hero__tools">
+                    <button type="button" className="configuraciones-hero__action" onClick={handleCancel}>
+                        Restablecer cambios
+                    </button>
+                    <button
+                        type="button"
+                        className="configuraciones-hero__action configuraciones-hero__action--outline"
+                        onClick={handleEnablePasswordFields}
+                        disabled={enablePasswordFields}
+                    >
+                        {enablePasswordFields ? 'Edición habilitada' : 'Actualizar contraseña'}
+                    </button>
+                </div>
+            </section>
+
             <div className="configuraciones-container">
                 {toast.visible && (
                     <Toast
@@ -340,8 +393,10 @@ const Configuraciones = () => {
                     </div>
                 </div>
             </div>
-        </>
+        </main>
     );
 };
 
 export default Configuraciones;
+
+

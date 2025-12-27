@@ -22,11 +22,11 @@
 }
 
 .delete {
-    background-image: url('../../assets/icons/delete.svg');
+    background-image: url('../../recursos/icons/delete.svg');
 }
 
 .check {
-    background-image: url('../../assets/icons/check.svg');
+    background-image: url('../../recursos/icons/check.svg');
     background-repeat: no-repeat;
 }
 
@@ -37,3 +37,4 @@
 .btn-actions-container.green.clicked {
     background-color: #009929;
 }
+

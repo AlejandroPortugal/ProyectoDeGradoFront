@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import MenuPadres from './MenuPadres';
-import { getProfesoresConHorarios } from '../../service/profesor.service.jsx';
+import { getProfesoresConHorarios } from '../../servicios/profesor.service.jsx';
 import './ListaProfesoresEntrevistas.css';
 
 const ListaProfesoresEntrevista = () => {
@@ -82,3 +82,4 @@ const ListaProfesoresEntrevista = () => {
 };
 
 export default ListaProfesoresEntrevista;
+

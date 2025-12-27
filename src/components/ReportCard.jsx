@@ -1,6 +1,6 @@
 import React from 'react'
 import './ReportCard.css'
-import userLogo from '../assets/image/Image.svg'
+import userLogo from '../recursos/image/Image.svg'
 
 const ReportCard = () => {
   return (

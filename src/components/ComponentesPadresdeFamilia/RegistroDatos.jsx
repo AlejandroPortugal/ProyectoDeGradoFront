@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { enviarCorreoDeConfirmacion } from "../../service/correo.service.jsx";
+import { enviarCorreoDeConfirmacion } from "../../servicios/correo.service.jsx";
 import FullScreenLoader from "../ComponentsProfesores/ProgresoCircular.jsx"; // Importar el loader
 import "./RegistroDatos.css";
 
@@ -119,3 +119,4 @@ const RegistroDatos = () => {
 };
 
 export default RegistroDatos;
+

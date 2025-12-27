@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RegistroPadres.css";
-import logo from "../../assets/icons/logo.svg";
+import logo from "../../recursos/icons/logo.svg";
 
 const RegistroPadres = () => {
   const [formData, setFormData] = useState({
@@ -108,3 +108,4 @@ const RegistroPadres = () => {
 };
 
 export default RegistroPadres;
+

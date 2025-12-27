@@ -7,7 +7,7 @@
     font-family: "Kumbh Sans", sans-serif;
     color: white;
     padding: 0 20px;
-    transition: background-color 0.3s ease; /* Añadir transición para suavizar el cambio de color */
+    transition: background-color 0.3s ease;
 }
 
 .red {
@@ -25,18 +25,28 @@
     cursor: pointer;
 }
 
+.blue {
+    background-color: #1363df;
+    cursor: pointer;
+}
+
 .btn-actions-text-container.red:hover {
-    background-color: #cc3300; /* Cambia a un tono más claro de rojo */
+    background-color: #cc3300;
     cursor: pointer;
 }
 
 .btn-actions-text-container.green:hover {
-    background-color: #009929; /* Cambia a un tono más claro de verde */
+    background-color: #009929;
     cursor: pointer;
 }
 
 .btn-actions-text-container.yellow:hover {
-    background-color: #f4ec09; /* Cambia a un tono más claro de amarillo */
+    background-color: #f4ec09;
+    cursor: pointer;
+}
+
+.btn-actions-text-container.blue:hover {
+    background-color: #1b74ff;
     cursor: pointer;
 }
 
@@ -52,5 +62,10 @@
 
 .btn-actions-text-container.yellow.clicked {
     background-color: #f4ec09;
+    cursor: pointer;
+}
+
+.btn-actions-text-container.blue.clicked {
+    background-color: #1b74ff;
     cursor: pointer;
 }

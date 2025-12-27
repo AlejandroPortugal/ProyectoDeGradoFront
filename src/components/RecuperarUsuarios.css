@@ -1,105 +1,320 @@
+.recover-users-page {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: clamp(20px, 4vw, 36px);
+  box-sizing: border-box;
+}
+
+.recover-users-hero {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(20px, 4vw, 40px);
+  background: linear-gradient(135deg, rgba(0, 100, 20, 0.12) 0%, rgba(0, 52, 0, 0.08) 100%);
+  border: 1px solid rgba(0, 100, 20, 0.14);
+  border-radius: 28px;
+  padding: clamp(26px, 4vw, 40px);
+  box-shadow: 0 24px 44px rgba(0, 88, 24, 0.16);
+  overflow: hidden;
+}
+
+.recover-users-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.recover-users-hero__copy {
+  flex: 1 1 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  color: #0f2916;
+}
+
+.recover-users-hero__eyebrow {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: rgba(15, 41, 22, 0.6);
+}
+
+.recover-users-hero h2 {
+  margin: 0;
+  font-size: clamp(1.7rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: #0b3a1a;
+}
+
+.recover-users-hero p {
+  margin: 0;
+  font-size: clamp(0.96rem, 2.1vw, 1.08rem);
+  line-height: 1.7;
+  color: rgba(11, 34, 18, 0.78);
+}
+
+.recover-users-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(14, 85, 32, 0.15);
+}
+
+.recover-users-hero__chip {
+  background-color: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 100, 20, 0.22);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 0.88rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #0f2916;
+}
+
+.recover-users-hero__chip strong {
+  font-weight: 600;
+  color: #006414;
+}
+
+.recover-users-hero__stats {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 6px;
+}
+
+.recover-users-hero__stat-card {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 22px;
+  border: 1px solid rgba(0, 100, 20, 0.16);
+  padding: 20px 18px;
+  box-shadow: 0 18px 30px rgba(0, 88, 24, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 110px;
+  min-width: 200px;
+  flex: 1 1 200px;
+  color: #0f2916;
+}
+
+.recover-users-hero__stat-card--empty {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.recover-users-hero__stat-count {
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #006414;
+}
+
+.recover-users-hero__stat-label {
+  font-size: 0.92rem;
+  color: rgba(11, 34, 18, 0.75);
+  text-transform: capitalize;
+}
+
+.recover-users-hero__tools {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: -12px;
+}
+
+.recover-users-hero__search-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 100, 20, 0.22);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  width: min(360px, 100%);
+  color: #0f2916;
+}
+
+.recover-users-hero__search-wrapper img {
+  width: 18px;
+  height: 18px;
+}
+
+.recover-users-hero__search-wrapper input {
+  border: none;
+  background: transparent;
+  flex: 1;
+  font-size: 0.96rem;
+  color: #0f2916;
+}
+
+.recover-users-hero__search-wrapper input::placeholder {
+  color: rgba(15, 41, 22, 0.55);
+}
+
+.recover-users-hero__search-wrapper input:focus {
+  outline: none;
+}
+
+.recover-users-hero__refresh {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 24px;
+  background-color: #006414;
+  color: #ffffff;
+  font-size: 0.94rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 14px 24px rgba(0, 88, 24, 0.22);
+}
+
+.recover-users-hero__refresh:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 30px rgba(0, 88, 24, 0.28);
+}
+
+.recover-users-hero__refresh:disabled {
+  opacity: 0.65;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+
 .ReUsuariosApp-container {
-    margin: 20px auto;
-    padding: 20px;
-    max-width: 1200px; /* Ancho máximo incrementado */
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: left;
-    width: 90%; /* Asegurar que ocupa todo el contenedor */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 18px 30px rgba(9, 46, 21, 0.1);
+  padding: clamp(18px, 3vw, 28px);
+}
+
+.ReUsuariosApp-table-container {
+  overflow-x: auto;
+  border-radius: 18px;
+}
+
+.ReUsuariosApp-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+}
+
+.ReUsuariosApp-table th,
+.ReUsuariosApp-table td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #e2e8e4;
+}
+
+.ReUsuariosApp-table th {
+  background-color: #006414;
+  color: white;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.ReUsuariosApp-table tbody tr:nth-child(even) {
+  background-color: #f8fbf8;
+}
+
+.ReUsuariosApp-table tbody tr:hover {
+  background-color: #eef6f0;
+}
+
+.ReUsuariosApp-action-button {
+  border: none;
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ReUsuariosApp-green-button {
+  background-color: #006414;
+  color: white;
+  box-shadow: 0 8px 16px rgba(0, 100, 20, 0.28);
+}
+
+.ReUsuariosApp-green-button:hover {
+  background-color: #009929;
+  transform: translateY(-1px);
+}
+
+.ReUsuariosApp-action-button img {
+  width: 20px;
+  height: 20px;
+}
+
+.ReUsuariosApp-loading {
+  display: flex;
+  justify-content: center;
+  padding: 60px 0;
+}
+
+@media (max-width: 1024px) {
+  .recover-users-hero {
+    flex-direction: column;
   }
-  
-  .ReUsuariosApp-header {
-    font-size: 24px;
-    color: #003400;
-    margin-bottom: 20px;
-  }
-  
-  .ReUsuariosApp-search-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    gap: 10px;
-    margin-left: 1px; /* Ajuste del margen para alinear mejor */
-  }
-  
-  .ReUsuariosApp-search-field {
-    flex-grow: 1;
-    max-width: 1000px; /* Incrementado el ancho máximo */
-    width: 100%; /* Asegura que ocupa todo el espacio disponible */
-    
-  }
-  
-  .ReUsuariosApp-icon-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
+
+  .recover-users-hero__stats {
     justify-content: center;
-    padding: 6px;
-    border-radius: 50%;
-    transition: background-color 0.2s;
   }
-  
-  .ReUsuariosApp-icon-button:hover {
-    background-color: #f1f1f1;
+
+  .recover-users-hero__tools {
+    flex-direction: column;
+    align-items: stretch;
   }
-  
-  .ReUsuariosApp-table-container {
-    overflow-x: auto;
-    border-radius: 8px;
-  }
-  
-  .ReUsuariosApp-table {
+
+  .recover-users-hero__refresh {
     width: 100%;
-    min-width: 1000px; /* Incrementado el ancho mínimo */
-    border-collapse: collapse;
-  }
-  
-  .ReUsuariosApp-table th,
-  .ReUsuariosApp-table td {
-    padding: 10px;
     text-align: center;
-    border: 1px solid #ddd;
   }
-  
-  .ReUsuariosApp-table th {
-    background-color: #003400;
-    color: white;
+}
+
+@media (max-width: 768px) {
+  .recover-users-page {
+    padding: 88px 18px 56px;
   }
-  
-  .ReUsuariosApp-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
+
+  .recover-users-hero__copy {
+    flex-basis: 100%;
   }
-  
-  .ReUsuariosApp-table tbody tr:hover {
-    background-color: #f1f1f1;
+
+  .recover-users-hero__stats {
+    justify-content: stretch;
   }
-  
-  .ReUsuariosApp-action-button {
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    padding: 6px;
-    transition: all 0.2s;
-    margin: 0 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+  .ReUsuariosApp-table {
+    min-width: 100%;
   }
-  
-  .ReUsuariosApp-green-button {
-    background-color: #006414;
-    color: white;
+}
+
+@media (max-width: 540px) {
+  .recover-users-hero__tools {
+    gap: 16px;
   }
-  
-  .ReUsuariosApp-green-button:hover {
-    background-color: #009929;
+
+  .recover-users-hero__search-wrapper {
+    width: 100%;
   }
-  
-  .ReUsuariosApp-action-button img {
-    width: 20px;
-    height: 20px;
+
+  .ReUsuariosApp-container {
+    padding: 18px;
   }
-  
+}

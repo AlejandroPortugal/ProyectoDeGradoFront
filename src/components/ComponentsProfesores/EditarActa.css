@@ -1,62 +1,304 @@
-.editar-acta-container {
-    padding: 20px;
-    margin-left: 20px;
+.editar-acta-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px) 40px;
+  box-sizing: border-box;
+  font-family: 'Kumbh Sans', sans-serif;
+  color: #0f2916;
+}
+
+.editar-acta-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(220px, 1.3fr);
+  gap: clamp(18px, 4vw, 32px);
+  padding: clamp(24px, 4vw, 36px);
+  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(0, 100, 20, 0.14) 0%, rgba(0, 52, 0, 0.12) 100%);
+  border: 1px solid rgba(0, 100, 20, 0.16);
+  box-shadow: 0 24px 44px rgba(9, 53, 16, 0.16);
+  align-items: center;
+}
+
+.editar-acta-hero__content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.editar-acta-hero__eyebrow {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-weight: 600;
+  color: rgba(15, 41, 22, 0.6);
+}
+
+.editar-acta-hero__content h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 3.4vw, 2.5rem);
+  color: #0b3a1a;
+}
+
+.editar-acta-hero__content p {
+  margin: 0;
+  color: rgba(15, 41, 22, 0.78);
+  line-height: 1.5;
+}
+
+.editar-acta-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.editar-acta-hero__input-group {
+  flex: 1 1 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.editar-acta-hero__input-group label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: rgba(15, 41, 22, 0.72);
+}
+
+.editar-acta-hero__input-group input {
+  border-radius: 14px;
+  border: 1px solid rgba(0, 100, 20, 0.28);
+  padding: 12px 3px;
+  font-size: 0.96rem;
+  background: rgba(255, 255, 255, 0.88);
+  color: #0f2916;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.editar-acta-hero__input-group input:focus {
+  outline: none;
+  border-color: rgba(0, 100, 20, 0.52);
+  box-shadow: 0 0 0 3px rgba(0, 100, 20, 0.18);
+}
+
+.editar-acta-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 26px;
+  background: linear-gradient(120deg, #0b7a2a, #0a561d);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 15px 28px rgba(8, 77, 26, 0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.editar-acta-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 32px rgba(8, 77, 26, 0.4);
+}
+
+.editar-acta-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.editar-acta-hero__highlight {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid rgba(0, 100, 20, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.editar-acta-hero__highlight span {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: rgba(15, 41, 22, 0.62);
+}
+
+.editar-acta-hero__highlight strong {
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  color: #0b3a1a;
+}
+
+.editar-acta-hero__highlight p {
+  margin: 0;
+  color: rgba(15, 41, 22, 0.72);
+}
+
+.editar-acta-hero__highlight small {
+  color: rgba(15, 41, 22, 0.58);
+  font-weight: 600;
+}
+
+.editar-acta-panel {
+  background: #fff;
+  border-radius: 28px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 28px 48px rgba(9, 53, 16, 0.08);
+  padding: clamp(24px, 4vw, 36px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.editar-acta-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.editar-acta-panel__header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #0b3a1a;
+}
+
+.editar-acta-panel__header p {
+  margin: 4px 0 0;
+  color: rgba(15, 41, 22, 0.7);
+}
+
+.editar-acta-panel__table-wrapper {
+  width: 100%;
+}
+
+.editar-acta-panel__table {
+  border-radius: 20px;
+  border: 1px solid rgba(0, 100, 20, 0.09);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  overflow: hidden;
+}
+
+.editar-acta-panel__table .MuiDataGrid-root {
+  border: none;
+  font-family: 'Kumbh Sans', sans-serif;
+}
+
+.editar-acta-panel__table .MuiDataGrid-columnHeaders {
+  background: rgba(0, 100, 20, 0.08);
+  font-weight: 600;
+  color: #0b3a1a;
+}
+
+.editar-acta-panel__table .MuiDataGrid-row:nth-child(even) {
+  background: rgba(0, 100, 20, 0.015);
+}
+
+.editar-acta-panel__table .MuiDataGrid-cell {
+  border-color: rgba(0, 100, 20, 0.06);
+}
+
+.editar-acta-panel__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: clamp(36px, 6vw, 48px) 24px;
+  color: rgba(15, 41, 22, 0.7);
+  text-align: center;
+}
+
+.editar-acta-loader {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid rgba(0, 100, 20, 0.18);
+  border-top-color: #007c1f;
+  animation: editar-acta-spin 1s linear infinite;
+}
+
+@keyframes editar-acta-spin {
+  to {
+    transform: rotate(360deg);
   }
-  
-  .student-search {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    
-    
-    
+}
+
+.acciones-buttons {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 6px 0;
+}
+
+.ver-button {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 20px;
+  background: linear-gradient(120deg, #0b7a2a, #0a561d);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  min-width: 140px;
+}
+
+.ver-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(8, 77, 26, 0.32);
+}
+
+@media (max-width: 1024px) {
+  .editar-acta-panel__header {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .student-search label {
-    margin-right: 10px;
-    font-weight: bold;
-    width: 90%;
-   
+}
+
+@media (max-width: 960px) {
+  .editar-acta-hero {
+    grid-template-columns: 1fr;
   }
-  
-  .student-input {
-    padding: 8px;
-    width: 300px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    border: black solid 2px;
+
+  .editar-acta-hero__highlight {
+    width: 85%;
   }
-  
-  .acciones-buttons {
-    display: flex;
-    gap: 20px;
-    padding-top: 10px;
-    padding-left: 60px;
+}
+
+@media (max-width: 720px) {
+  .editar-acta-panel__table-wrapper {
+    overflow-x: auto;
   }
-  
-  .ver-button,
-  .editar-button,
-  .eliminar-button {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
+
+  .editar-acta-panel__table {
+    min-width: 560px;
   }
-  
-  .ver-button {
-    background-color: #006414;
-    color: white;
-    border-radius: 10px;
+}
+
+@media (max-width: 640px) {
+  .editar-acta-layout {
+    padding: 0 16px 28px;
   }
-  
-  .editar-button {
-    background-color: #28a745;
-    color: white;
+
+  .editar-acta-hero__actions {
+    flex-direction: column;
+    align-items: stretch;
   }
-  
-  .eliminar-button {
-    background-color: #dc3545;
-    color: white;
+
+  .editar-acta-btn {
+    width: 100%;
   }
-  
+}
+
+@media (max-width: 480px) {
+  .editar-acta-hero__input-group {
+    flex: 1 1 120px;
+  }
+
+  .editar-acta-hero__input-group input {
+    width: 85%;
+  }
+}

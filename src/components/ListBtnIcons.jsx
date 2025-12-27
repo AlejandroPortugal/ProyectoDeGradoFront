@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import iconHome from '../assets/icons/home-2.svg';
-import iconUser from '../assets/icons/user.svg';
+import iconHome from '../recursos/icons/home-2.svg';
+import iconUser from '../recursos/icons/user.svg';
 import BtnIcon from './botones/BtnIcon';
 
 const btnsIcons = [
@@ -13,7 +13,7 @@ const btnsIcons = [
     icon: iconUser,
     text: 'Gestión de Usuarios',
     dropdown: [
-      { text: 'Listar Usuarios', link: '../pages/UserManagementPage.jsx' },  // Ruta a UserManagementPage
+      { text: 'Listar Usuarios', link: '../paginas/UserManagementPage.jsx' },  // Ruta a UserManagementPage
     ]
   }
 ];
@@ -44,3 +44,4 @@ const ListBtnIcons = () => {
 };
 
 export default ListBtnIcons;
+

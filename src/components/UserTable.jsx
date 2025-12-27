@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -12,11 +12,21 @@ import BtnActionsText from "./botones/BtnActionsText";
 import "./UserTable.css";
 import ExportActions from "./ExportActions";
 
-
-const UserTable = ({ users, onView, onEdit, onDelete, onCite, hideDefaultActions, exportTitle }) => {
+const UserTable = ({
+  users,
+  onView,
+  onEdit,
+  onDelete,
+  onCite,
+  hideDefaultActions,
+  exportTitle,
+  showToolbar = true,
+  filterTerm,
+  onFilterChange,
+}) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [filter, setFilter] = useState("");
+  const [internalFilter, setInternalFilter] = useState("");
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -28,129 +38,219 @@ const UserTable = ({ users, onView, onEdit, onDelete, onCite, hideDefaultActions
   };
 
   const handleFilterChange = (event) => {
-    setFilter(event.target.value.toLowerCase());
+    const value = event.target.value;
+    if (onFilterChange) {
+      onFilterChange(value);
+    } else {
+      setInternalFilter(value);
+    }
   };
-  
 
-  const filteredUsers = users.filter((user) =>
-    user.nombres.toLowerCase().includes(filter) ||
-    user.apellidopaterno.toLowerCase().includes(filter) ||
-    user.apellidomaterno.toLowerCase().includes(filter) ||
-    user.rol.toLowerCase().includes(filter)
+  const activeFilter = filterTerm ?? internalFilter;
+  const normalizedFilter = activeFilter.trim().toLowerCase();
+
+  const filteredUsers = useMemo(() => {
+    if (!normalizedFilter) {
+      return users;
+    }
+    return users.filter((user) => {
+      const searchable = [user.nombres, user.apellidopaterno, user.apellidomaterno, user.rol]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return searchable.includes(normalizedFilter);
+    });
+  }, [users, normalizedFilter]);
+
+  const paginatedUsers = useMemo(
+    () => filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [filteredUsers, page, rowsPerPage]
   );
 
+  useEffect(() => {
+    setPage(0);
+  }, [normalizedFilter]);
+
   return (
-    
-    <Paper sx={{ width: "95%", overflow: "hidden", border: "2px solid black", marginLeft: "5%", height: 'auto', fontFamily: "Kumbh Sans" }}>
-      <div className="search-and-export">
-        <TextField
-          label="Buscar"
-          variant="outlined"
-          fullWidth
-          onChange={handleFilterChange}
-          placeholder="Buscar por nombre, apellido o rol"
-          style={{ margin: "10px", border: '2px solid black', borderRadius: "8px" }}
-        />
-       
-       <ExportActions
-  data={users}
-  context="Usuarios"
-  selectedDate={new Date().toLocaleDateString()}
-  title={exportTitle || 'Listado de Usuarios'}
-  columns={[
-    { title: 'Nombres', field: 'nombres' },
-    { title: 'Apellido Paterno', field: 'apellidopaterno' },
-    { title: 'Apellido Materno', field: 'apellidomaterno' },
-    { title: 'Rol', field: 'rol' },
-  ]}
-/>
+    <div className="user-table-wrapper">
+      <Paper elevation={0} className="user-table-card">
+        {showToolbar && (
+          <div className="user-table-toolbar">
+            <TextField
+              className="user-table-search"
+              label="Buscar"
+              variant="outlined"
+              size="small"
+              fullWidth
+              value={activeFilter}
+              onChange={handleFilterChange}
+              placeholder="Buscar por nombre, apellido o rol"
+            />
 
+            <div className="user-table-export">
+              <ExportActions
+                data={filteredUsers}
+                context="Usuarios"
+                selectedDate={new Date().toLocaleDateString()}
+                title={exportTitle || "Listado de Usuarios"}
+                columns={[
+                  { title: "Nombres", field: "nombres" },
+                  { title: "Apellido Paterno", field: "apellidopaterno" },
+                  { title: "Apellido Materno", field: "apellidomaterno" },
+                  { title: "Rol", field: "rol" },
+                ]}
+              />
+            </div>
+          </div>
+        )}
 
-
-      </div>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Nombres</TableCell>
-              <TableCell>Apellido Paterno</TableCell>
-              <TableCell>Apellido Materno</TableCell>
-              <TableCell>Rol</TableCell>
-              <TableCell>Acción</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredUsers
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((user, index) => (
-                <TableRow
-                  key={index}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: '#f1f1f1',
-                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                      cursor: 'pointer'
-                    }
-                  }}
-                >
-                  <TableCell>{user.nombres}</TableCell>
-                  <TableCell>{user.apellidopaterno}</TableCell>
-                  <TableCell>{user.apellidomaterno}</TableCell>
-                  <TableCell>{user.rol}</TableCell>
-                  <TableCell>
-                    <section className="btn-actions">
-                      {/* Botones predeterminados: Ver, Editar, Eliminar */}
-                      {!hideDefaultActions && (
-                        <>
-                          {onView && (
-                            <BtnActionsText
-                              color="green"
-                              text="Ver"
-                              onClick={() => onView(user)}
-                            />
-                          )}
-                          {onEdit && (
-                            <BtnActionsText
-                              color="yellow"
-                              text="Editar"
-                              onClick={() => onEdit(user)}
-                            />
-                          )}
-                          {onDelete && (
-                            <BtnActionsText
-                              color="red"
-                              text="Eliminar"
-                              onClick={() => onDelete(user)}
-                            />
-                          )}
-                        </>
-                      )}
-
-                      {/* Botón personalizado: Citar */}
-                      {onCite && (
-                        <BtnActionsText
-                          color="blue"
-                          text="Citar"
-                          onClick={() => onCite(user)}
-                        />
-                      )}
-                    </section>
+        <TableContainer className="user-table-container">
+          <Table className="user-table" stickyHeader size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Nombres</TableCell>
+                <TableCell>Apellido Paterno</TableCell>
+                <TableCell>Apellido Materno</TableCell>
+                <TableCell>Rol</TableCell>
+                <TableCell>Accion</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredUsers.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="user-table-empty">
+                    No se encontraron usuarios con ese criterio de busqueda.
                   </TableCell>
                 </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        component="div"
-        count={filteredUsers.length}
-        page={page}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
-    </Paper>
+              ) : (
+                paginatedUsers.map((user, index) => (
+                  <TableRow
+                    key={user.id ? `${user.id}-${user.rol}` : `${user.rol}-${index}`}
+                    hover
+                    className="user-table-row"
+                  >
+                    <TableCell>{user.nombres}</TableCell>
+                    <TableCell>{user.apellidopaterno}</TableCell>
+                    <TableCell>{user.apellidomaterno}</TableCell>
+                    <TableCell>{user.rol}</TableCell>
+                    <TableCell>
+                      <section className="btn-actions">
+                        {!hideDefaultActions && (
+                          <>
+                            {onView && (
+                              <BtnActionsText
+                                color="green"
+                                text="Ver"
+                                onClick={() => onView(user)}
+                              />
+                            )}
+                            {onEdit && (
+                              <BtnActionsText
+                                color="yellow"
+                                text="Editar"
+                                onClick={() => onEdit(user)}
+                              />
+                            )}
+                            {onDelete && (
+                              <BtnActionsText
+                                color="red"
+                                text="Eliminar"
+                                onClick={() => onDelete(user)}
+                              />
+                            )}
+                          </>
+                        )}
+
+                        {onCite && (
+                          <BtnActionsText
+                            color="blue"
+                            text="Citar"
+                            onClick={() => onCite(user)}
+                          />
+                        )}
+                      </section>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <div className="user-table-mobile-list">
+          {filteredUsers.length === 0 ? (
+            <p className="user-table-empty">No se encontraron usuarios con ese criterio de busqueda.</p>
+          ) : (
+            paginatedUsers.map((user, index) => (
+              <article
+                key={user.id ? `${user.id}-mobile-${user.rol}` : `mobile-${user.rol}-${index}`}
+                className="user-table-mobile-card"
+              >
+                <div className="user-table-mobile-card__header">
+                  <span className="user-table-mobile-card__role">{user.rol}</span>
+                  {!hideDefaultActions && onView && (
+                    <button
+                      type="button"
+                      className="user-table-mobile-card__link"
+                      onClick={() => onView(user)}
+                    >
+                      Ver ficha
+                    </button>
+                  )}
+                </div>
+                <div className="user-table-mobile-card__body">
+                  <p>
+                    <strong>Nombres:</strong> {user.nombres}
+                  </p>
+                  <p>
+                    <strong>Apellido paterno:</strong> {user.apellidopaterno}
+                  </p>
+                  <p>
+                    <strong>Apellido materno:</strong> {user.apellidomaterno}
+                  </p>
+                </div>
+                <div className="user-table-mobile-card__actions">
+                  {!hideDefaultActions && (
+                    <>
+                      {onEdit && (
+                        <BtnActionsText
+                          color="yellow"
+                          text="Editar"
+                          onClick={() => onEdit(user)}
+                        />
+                      )}
+                      {onDelete && (
+                        <BtnActionsText
+                          color="red"
+                          text="Eliminar"
+                          onClick={() => onDelete(user)}
+                        />
+                      )}
+                    </>
+                  )}
+
+                  {onCite && (
+                    <BtnActionsText color="blue" text="Citar" onClick={() => onCite(user)} />
+                  )}
+                </div>
+              </article>
+            ))
+          )}
+        </div>
+
+        <TablePagination
+          className="user-table-pagination"
+          component="div"
+          count={filteredUsers.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 25]}
+        />
+      </Paper>
+    </div>
   );
 };
 

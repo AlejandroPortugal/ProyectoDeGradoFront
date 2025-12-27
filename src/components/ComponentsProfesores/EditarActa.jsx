@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import './EditarActa.css';
 import Header from '../Header.jsx';
 import { useNavigate } from 'react-router-dom';
-import { getEstudiantes } from '../../service/Estudiante.service.jsx';
+import { getEstudiantes } from '../../servicios/Estudiante.service.jsx';
 
 const EditarActa = () => {
   const [search, setSearch] = useState('');
@@ -12,31 +12,39 @@ const EditarActa = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const response = await getEstudiantes();
-                const studentsWithId = response.data.map((student) => ({
-          ...student,
-          uniqueId: `${student.idcurso}-${student.nivel}-${student.idestudiante}`,
-          curso: student.nombrecurso ? `${student.nombrecurso}` : `Curso desconocido (${student.idcurso})`,
-        }));
-        setStudents(studentsWithId);
-      } catch (error) {
-        console.error('Error al obtener los estudiantes:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStudents();
+  const fetchStudents = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await getEstudiantes();
+      const studentsWithId = response.data.map((student) => ({
+        ...student,
+        uniqueId: `${student.idcurso}-${student.nivel}-${student.idestudiante}`,
+        curso: student.nombrecurso ? `${student.nombrecurso}` : `Curso desconocido (${student.idcurso})`,
+      }));
+      setStudents(studentsWithId);
+    } catch (error) {
+      console.error('Error al obtener los estudiantes:', error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const filteredRows = students.filter((student) =>
-    `${student.nombres} ${student.apellidopaterno} ${student.apellidomaterno}`
-      .toLowerCase()
-      .includes(search.toLowerCase())
+  useEffect(() => {
+    fetchStudents();
+  }, [fetchStudents]);
+
+  const filteredRows = useMemo(
+    () =>
+      students.filter((student) =>
+        `${student.nombres} ${student.apellidopaterno} ${student.apellidomaterno}`
+          .toLowerCase()
+          .includes(search.toLowerCase())
+      ),
+    [students, search]
   );
+
+  const totalStudents = students.length;
+  const filteredCount = filteredRows.length;
 
   const columns = [
     { field: 'nombres', headerName: 'Nombre', flex: 1 },
@@ -46,58 +54,98 @@ const EditarActa = () => {
     {
       field: 'acciones',
       headerName: 'Actas del estudiante',
-      flex: 1,
+      flex: 0.8,
       renderCell: (params) => (
         <div className="acciones-buttons">
-        <button
-  className="ver-button"
-  onClick={() =>
-    navigate('/verActas', {
-      state: { idestudiante: params.row.idestudiante },
-    })
-  }
->
-  Ver Carpeta
-</button>
-
-      </div>
+          <button
+            className="ver-button"
+            type="button"
+            onClick={() =>
+              navigate('/verActas', {
+                state: { idestudiante: params.row.idestudiante },
+              })
+            }
+          >
+            Ver carpeta
+          </button>
+        </div>
       ),
     },
   ];
 
+  const descripcionTabla =
+    filteredCount === totalStudents
+      ? 'Mostrando todas las carpetas disponibles.'
+      : `Mostrando ${filteredCount} de ${totalStudents} carpetas.`;
 
   return (
     <>
-      <Header title="GESTIÓN DE ACTAS" subtitle="Listado de actas por carpetas de cada estudiante" />
-      <div className="editar-acta-container">
-        <div className="student-search">
-          <input
-            type="text"
-            id="search"
-            placeholder="Buscar por nombre del estudiante"
-            className="student-input"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <Paper className="data-grid-container">
-          {loading ? (
-            <p>Cargando estudiantes...</p>
-          ) : (
-            <DataGrid
-              rows={filteredRows}
-              columns={columns}
-              pageSize={7}
-              rowsPerPageOptions={[7]}
-              autoHeight
-              disableSelectionOnClick
-              getRowId={(row) => row.uniqueId}
-            />
-          )}
-        </Paper>
-      </div>
+
+      <main className="editar-acta-layout">
+        <section className="editar-acta-hero">
+          <div className="editar-acta-hero__content">
+            <span className="editar-acta-hero__eyebrow">Carpetas digitales</span>
+            <h1>Consulta y gestiona las actas existentes</h1>
+            <p>
+              Busca al estudiante, revisa su historial y mantenga la trazabilidad de cada reunion realizada. Todo en un
+              solo lugar y listo para usarse desde cualquier dispositivo.
+            </p>
+            <div className="editar-acta-hero__actions">
+              <div className="editar-acta-hero__input-group">
+                <label htmlFor="search-acta">Buscar estudiante</label>
+                <input
+                  id="search-acta"
+                  type="text"
+                  placeholder="Ingresa nombres o apellidos"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+              <button type="button" className="editar-acta-btn" onClick={fetchStudents} disabled={loading}>
+                {loading ? 'Actualizando...' : 'Actualizar lista'}
+              </button>
+            </div>
+          </div>
+          <div className="editar-acta-hero__highlight">
+            <span>Carpetas disponibles</span>
+            <strong>{filteredCount}</strong>
+            <p>{`de ${totalStudents} estudiantes registrados`}</p>
+            <small>{loading ? 'Sincronizando datos...' : 'Filtro aplicado correctamente'}</small>
+          </div>
+        </section>
+
+        <section className="editar-acta-panel">
+          <header className="editar-acta-panel__header">
+            <div>
+              <h2>Listado de carpetas</h2>
+              <p>{descripcionTabla}</p>
+            </div>
+          </header>
+          <div className="editar-acta-panel__table-wrapper">
+            <Paper className="editar-acta-panel__table">
+              {loading ? (
+                <div className="editar-acta-panel__empty">
+                  <span className="editar-acta-loader" aria-hidden="true" />
+                  <p>Cargando estudiantes...</p>
+                </div>
+              ) : (
+                <DataGrid
+                  rows={filteredRows}
+                  columns={columns}
+                  pageSize={7}
+                  rowsPerPageOptions={[7]}
+                  autoHeight
+                  disableSelectionOnClick
+                  getRowId={(row) => row.uniqueId}
+                />
+              )}
+            </Paper>
+          </div>
+        </section>
+      </main>
     </>
   );
 };
 
 export default EditarActa;
+

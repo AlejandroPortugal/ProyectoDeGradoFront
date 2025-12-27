@@ -1,162 +1,373 @@
-/* General Styles */
-.configuraciones-container {
-    width: 85%;
-    max-width: 1200px;
-    margin: 0 auto;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-left: 50px;
-    margin-top: 20px;
- 
-  }
-  
-  .configuraciones-grid {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap;
-    width: 100%;
-  }
-  
-  .configuraciones-card {
-    flex: 1;
-    min-width: 280px;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  
-  .section-title {
-    font-size: 18px;
-    margin-bottom: 15px;
-    color: #333;
-    text-align: center;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  label {
-    display: block;
-    font-size: 14px;
-    margin-bottom: 5px;
-    color: #555;
-  }
-  
-  input {
-    width: calc(100% - 50px);
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-  }
-  
-  .editable-field {
-    display: flex;
-    align-items: center;
-  }
-  
-  .edit-btn-configuracion {
-    margin-left: 10px;
-background-color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    color: black;
-  
-  }
-  
-  .edit-btn:hover {
-    color: #009929;
-  }
-  
-  /* Responsive Styles */
-  @media (max-width: 768px) {
-    .configuraciones-grid {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .configuraciones-card {
-      width: 100%;
-    }
-  }
-  
-  .form-actions {
-    margin-top: 20px;
-    display: flex;
-    justify-content: flex-end; /* Alinea los botones al final */
-    gap: 10px; /* Espaciado entre botones */
-    width: 100%;
-  }
-  
-  
-  .cancel-btn,
-.confirm-btn,
-.enable-password-btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 3px;
-  font-size: 14px;
-  cursor: pointer;
-  min-width: 120px; /* Para asegurar que los botones sean del mismo tamaño */
-  text-align: center;
+/* Página principal */
+.configuraciones-page {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: clamp(20px, 4vw, 36px);
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
-  
-  .cancel-btn {
-    background-color: #dc3545;
-    color: #fff;
+/* Hero */
+.configuraciones-hero {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(20px, 4vw, 40px);
+  background: linear-gradient(135deg, rgba(0, 100, 20, 0.12) 0%, rgba(0, 52, 0, 0.08) 100%);
+  border: 1px solid rgba(0, 100, 20, 0.14);
+  border-radius: 28px;
+  padding: clamp(26px, 4vw, 40px);
+  box-shadow: 0 24px 44px rgba(0, 88, 24, 0.16);
+}
+
+.configuraciones-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.configuraciones-hero__copy {
+  flex: 1 1 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  color: #0f2916;
+}
+
+.configuraciones-hero__eyebrow {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: rgba(15, 41, 22, 0.6);
+}
+
+.configuraciones-hero h2 {
+  margin: 0;
+  font-size: clamp(1.7rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: #0b3a1a;
+}
+
+.configuraciones-hero p {
+  margin: 0;
+  font-size: clamp(0.96rem, 2.1vw, 1.08rem);
+  line-height: 1.7;
+  color: rgba(11, 34, 18, 0.78);
+}
+
+.configuraciones-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(0, 100, 20, 0.18);
+}
+
+.configuraciones-hero__chip {
+  background-color: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 100, 20, 0.22);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 0.88rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #0f2916;
+}
+
+.configuraciones-hero__chip strong {
+  font-weight: 600;
+  color: #006414;
+}
+
+.configuraciones-hero__stats {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 6px;
+}
+
+.configuraciones-hero__stat-card {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 22px;
+  border: 1px solid rgba(0, 100, 20, 0.16);
+  padding: 20px 18px;
+  box-shadow: 0 18px 30px rgba(0, 88, 24, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 110px;
+  min-width: 200px;
+  flex: 1 1 200px;
+  color: #0f2916;
+}
+
+.configuraciones-hero__stat-count {
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #006414;
+}
+
+.configuraciones-hero__stat-label {
+  font-size: 0.92rem;
+  color: rgba(11, 34, 18, 0.75);
+}
+
+.configuraciones-hero__tools {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: -12px;
+  flex-wrap: wrap;
+}
+
+.configuraciones-hero__action {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #007c1f 0%, #005a17 100%);
+  color: #ffffff;
+  font-size: 0.94rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 14px 24px rgba(0, 88, 24, 0.22);
+}
+
+.configuraciones-hero__action:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 30px rgba(0, 68, 16, 0.28);
+}
+
+.configuraciones-hero__action:disabled {
+  opacity: 0.65;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+
+.configuraciones-hero__action--outline {
+  background: rgba(255, 255, 255, 0.88);
+  color: #0f2916;
+  border: 1px solid rgba(0, 100, 20, 0.2);
+  box-shadow: 0 10px 20px rgba(0, 88, 24, 0.12);
+}
+
+/* Contenedor principal */
+.configuraciones-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.configuraciones-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.configuraciones-card {
+  flex: 1;
+  min-width: 280px;
+  padding: 24px;
+  border: 1px solid rgba(0, 100, 20, 0.16);
+  border-radius: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 12px 24px rgba(0, 88, 24, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.section-title {
+  font-size: 1.12rem;
+  font-weight: 700;
+  margin: 0;
+  color: #0b3a1a;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+label {
+  font-size: 0.92rem;
+  color: rgba(15, 41, 22, 0.75);
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  border: 1px solid rgba(0, 100, 20, 0.18);
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.96);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #006414;
+  box-shadow: 0 0 0 4px rgba(0, 88, 24, 0.16);
+}
+
+.editable-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.edit-btn-configuracion {
+  padding: 8px 12px;
+  border: 1px solid rgba(0, 100, 20, 0.18);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #0f2916;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.edit-btn-configuracion:hover {
+  background: rgba(0, 100, 20, 0.1);
+  color: #006414;
+}
+
+.password-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.eye-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  cursor: pointer;
+  transition: opacity 0.18s ease;
+}
+
+.eye-icon:hover {
+  opacity: 0.8;
+}
+
+/* Botonera */
+.form-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.cancel-btn,
+.confirm-btn,
+.enable-password-btn {
+  padding: 12px 22px;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  min-width: 140px;
+  text-align: center;
+  font-weight: 600;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.cancel-btn {
+  background-color: #dc3545;
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(220, 53, 69, 0.18);
+}
+
+.cancel-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 24px rgba(220, 53, 69, 0.24);
+}
+
+.confirm-btn {
+  background: linear-gradient(135deg, #007c1f 0%, #005a17 100%);
+  color: #fff;
+  box-shadow: 0 12px 24px rgba(0, 88, 24, 0.26);
+}
+
+.confirm-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 28px rgba(0, 68, 16, 0.32);
+}
+
+.enable-password-btn {
+  background: rgba(0, 100, 20, 0.08);
+  color: #006414;
+  border: 1px solid rgba(0, 100, 20, 0.2);
+  box-shadow: 0 10px 20px rgba(0, 88, 24, 0.14);
+  margin-top: 10px;
+}
+
+.enable-password-btn:disabled {
+  background-color: rgba(0, 0, 0, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  border: none;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .configuraciones-hero {
+    flex-direction: column;
   }
-  
-  .cancel-btn:hover {
-    background-color: #c82333;
+
+  .configuraciones-hero__stats {
+    justify-content: center;
   }
-  
-  .confirm-btn {
-    background-color: #28a745;
-    color: #fff;
+
+  .configuraciones-hero__tools {
+    justify-content: center;
   }
-  
-  .confirm-btn:hover {
-    background-color: #218838;
+}
+
+@media (max-width: 768px) {
+  .configuraciones-page {
+    padding: 88px 18px 56px;
   }
-  .enable-password-btn {
-    background-color: #218838;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    font-size: 14px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-    
+
+  .configuraciones-grid {
+    flex-direction: column;
+    align-items: stretch;
   }
-  
-  .enable-password-btn:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+
+  .configuraciones-hero__tools {
+    gap: 16px;
   }
-  .password-field {
-    display: flex;
-    align-items: center;
+}
+
+@media (max-width: 540px) {
+  .configuraciones-hero__tools {
+    flex-direction: column;
+    align-items: stretch;
   }
-  
-  .eye-icon {
-    width: 20px;
-    height: 20px;
-   margin-right: 10px;
-    cursor: pointer;
+
+  .configuraciones-hero__action {
+    width: 100%;
   }
-  
-  .eye-icon:hover {
-    opacity: 0.8;
+
+  .form-actions {
+    justify-content: center;
   }
-  
+}

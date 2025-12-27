@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importa useNavigate
 import './BtnLogout.css';
-import userLogo from '../assets/icons/userblack.svg';
+import userLogo from '../recursos/icons/userblack.svg';
 import BtnActionsText from './botones/BtnActionsText';
 import AuthContext from '../auth'; // Asegúrate de importar el contexto
 
@@ -33,3 +33,4 @@ const BtnLogout = () => {
 };
 
 export default BtnLogout;
+

@@ -48,7 +48,63 @@
 .form-group select:focus {
   border-color: #007bff;
   outline: none;
-  box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* New Address Section Styles */
+.new-address-section {
+  grid-column: 1 / -1;
+  margin-top: 10px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.new-address-section h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #495057;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.new-address-section h4::before {
+  content: "📍";
+  font-size: 18px;
+}
+
+.new-address-grid {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.new-address-grid .form-group {
+  margin-bottom: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .new-address-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Animation for new address section */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.new-address-section {
+  animation: fadeIn 0.3s ease-out forwards;
+  box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.1);
 }
 
 /* Botones */

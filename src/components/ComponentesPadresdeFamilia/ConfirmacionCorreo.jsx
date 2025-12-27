@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { createDireccion } from "../../service/direccion.service.jsx";
-import { postPadre } from "../../service/PadreDeFamilia.jsx";
+import { createDireccion } from "../../servicios/direccion.service.jsx";
+import { postPadre } from "../../servicios/PadreDeFamilia.jsx";
 import Toast from "../Toast";
 import "./ConfirmacionCorreo.css";
 
@@ -135,3 +135,4 @@ const ConfirmacionCorreo = () => {
 };
 
 export default ConfirmacionCorreo;
+

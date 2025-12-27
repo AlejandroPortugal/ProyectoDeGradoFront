@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import { useNavigate } from 'react-router-dom';
 import './EliminarActas.css';
-import { getInactivasActas, activateActaReunion } from '../../service/actas.service';
+import { getInactivasActas, activateActaReunion } from '../../servicios/actas.service';
 import Header from '../Header';
 import DynamicModelForUsers from '../DynamicModelForUsers.jsx';
 
@@ -14,21 +12,24 @@ const EliminarActas = () => {
   const [search, setSearch] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedActa, setSelectedActa] = useState(null);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
+  const fetchActasInactivas = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await getInactivasActas();
+      setActas(response);
+      setFilteredActas(response);
+    } catch (error) {
+      console.error('Error al obtener las actas inactivas:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchActas = async () => {
-      try {
-        const response = await getInactivasActas();
-        setActas(response); // Asegúrate de que response contiene las actas con los campos materia y motivo
-        setFilteredActas(response);
-      } catch (error) {
-        console.error('Error al obtener las actas inactivas:', error);
-      }
-    };
-
-    fetchActas();
-  }, []);
+    fetchActasInactivas();
+  }, [fetchActasInactivas]);
 
   const handleOpenDialog = (acta) => {
     setSelectedActa(acta);
@@ -44,9 +45,7 @@ const EliminarActas = () => {
     try {
       if (selectedActa) {
         await activateActaReunion(selectedActa.idacta);
-        const updatedActas = actas.filter((acta) => acta.idacta !== selectedActa.idacta);
-        setActas(updatedActas);
-        setFilteredActas(updatedActas);
+        await fetchActasInactivas();
         setDialogOpen(false);
       }
     } catch (error) {
@@ -57,14 +56,33 @@ const EliminarActas = () => {
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
     setSearch(value);
-    const filtered = actas.filter(
-      (acta) =>
-        acta.materia.toLowerCase().includes(value) ||
-        acta.motivo.toLowerCase().includes(value) ||
-        new Date(acta.fechadecreacion).toLocaleDateString().includes(value)
-    );
+    const filtered = actas.filter((acta) => {
+      const materia = acta.materia?.toLowerCase() || '';
+      const motivo = acta.motivo?.toLowerCase() || '';
+      const fecha = new Date(acta.fechadecreacion).toLocaleDateString().toLowerCase();
+      return materia.includes(value) || motivo.includes(value) || fecha.includes(value);
+    });
     setFilteredActas(filtered);
   };
+
+  const totalActas = actas.length;
+  const filteredCount = filteredActas.length;
+
+  const resumenActas = useMemo(() => {
+    const porMotivo = filteredActas.reduce((acc, acta) => {
+      if (acta.motivo) {
+        acc[acta.motivo] = (acc[acta.motivo] || 0) + 1;
+      }
+      return acc;
+    }, {});
+
+    const topMotivo = Object.entries(porMotivo).sort((a, b) => b[1] - a[1])[0];
+
+    return {
+      motivos: Object.keys(porMotivo).length,
+      topMotivo: topMotivo ? topMotivo[0] : 'Sin registros',
+    };
+  }, [filteredActas]);
 
   const columns = [
     { field: 'materia', headerName: 'Materia', flex: 1 },
@@ -72,13 +90,10 @@ const EliminarActas = () => {
     { field: 'fechadecreacion', headerName: 'Fecha', flex: 1 },
     {
       field: 'acciones',
-      headerName: 'Acción',
+      headerName: 'Accion',
       flex: 1,
       renderCell: (params) => (
-        <button
-          className="action-btn activate-btn"
-          onClick={() => handleOpenDialog(params.row)}
-        >
+        <button className="action-btn activate-btn" type="button" onClick={() => handleOpenDialog(params.row)}>
           Activar
         </button>
       ),
@@ -87,44 +102,100 @@ const EliminarActas = () => {
 
   return (
     <>
-      <Header title="GESTION DE ACTAS" subtitle="Lista de actas desactivadas" />
-      <div className="eliminar-actas-container">
-        <header className="header">
-          <TextField
-            label="Escriba el nombre del estudiante"
-            variant="outlined"
-            fullWidth
-            value={search}
-            onChange={handleSearch}
-            className="search-bar"
-          />
-        </header>
-        <Paper className="data-grid-container">
-          <DataGrid
-            rows={filteredActas.map((acta) => ({
-              id: acta.idacta,
-              idacta: acta.idacta,
-              materia: acta.materia || 'Sin materia', // Verifica si existe materia
-              motivo: acta.motivo || 'Sin motivo', // Verifica si existe motivo
-              fechadecreacion: new Date(acta.fechadecreacion).toLocaleDateString(),
-            }))}
-            columns={columns}
-            pageSize={10}
-            rowsPerPageOptions={[10]}
-            autoHeight
-            disableSelectionOnClick
-          />
-        </Paper>
-      </div>
+      <main className="eliminar-actas-layout">
+        <section className="eliminar-actas-hero">
+          <div className="eliminar-actas-hero__content">
+            <span className="eliminar-actas-hero__eyebrow">Actas inactivas</span>
+            <h1>Recupera registros importantes</h1>
+            <p>
+              Revisa las actas desactivadas y reactivalas cuando sea necesario. Utiliza el buscador para localizar un
+              registro por materia, motivo o fecha.
+            </p>
+            <div className="eliminar-actas-hero__meta">
+              <article className="eliminar-actas-meta-card">
+                <span>Total inactivas</span>
+                <strong>{totalActas}</strong>
+              </article>
+              <article className="eliminar-actas-meta-card">
+                <span>Coincidencias actuales</span>
+                <strong>{filteredCount}</strong>
+              </article>
+              <article className="eliminar-actas-meta-card">
+                <span>Motivos distintos</span>
+                <strong>{resumenActas.motivos}</strong>
+              </article>
+              <article className="eliminar-actas-meta-card">
+                <span>Motivo recurrente</span>
+                <strong>{resumenActas.topMotivo}</strong>
+              </article>
+            </div>
+            <div className="eliminar-actas-hero__actions">
+              <div className="eliminar-actas-hero__input-group">
+                <label htmlFor="search-inactive">Busca un acta</label>
+                <input
+                  id="search-inactive"
+                  type="text"
+                  placeholder="Filtra por materia, motivo o fecha"
+                  value={search}
+                  onChange={handleSearch}
+                />
+              </div>
+              <button type="button" className="eliminar-actas-btn" onClick={fetchActasInactivas} disabled={loading}>
+                {loading ? 'Actualizando...' : 'Actualizar lista'}
+              </button>
+            </div>
+          </div>
+          <div className="eliminar-actas-hero__highlight">
+            <span>Estado del filtro</span>
+            <strong>{filteredCount}</strong>
+            <p>{filteredCount === totalActas ? 'Mostrando todas las actas inactivas.' : `Mostrando ${filteredCount} de ${totalActas}.`}</p>
+            <small>{loading ? 'Sincronizando datos...' : 'Filtro aplicado correctamente'}</small>
+          </div>
+        </section>
+
+        <section className="eliminar-actas-panel">
+          <header className="eliminar-actas-panel__header">
+            <div>
+              <h2>Actas desactivadas</h2>
+              <p>Selecciona un registro y activa nuevamente el acta cuando corresponda.</p>
+            </div>
+          </header>
+          <div className="eliminar-actas-panel__table-wrapper">
+            <Paper className="eliminar-actas-panel__table">
+              {loading ? (
+                <div className="eliminar-actas-panel__empty">
+                  <span className="eliminar-actas-loader" aria-hidden="true" />
+                  <p>Cargando actas...</p>
+                </div>
+              ) : (
+                <DataGrid
+                  rows={filteredActas.map((acta) => ({
+                    id: acta.idacta,
+                    idacta: acta.idacta,
+                    materia: acta.materia || 'Sin materia',
+                    motivo: acta.motivo || 'Sin motivo',
+                    fechadecreacion: new Date(acta.fechadecreacion).toLocaleDateString(),
+                  }))}
+                  columns={columns}
+                  pageSize={10}
+                  rowsPerPageOptions={[10]}
+                  autoHeight
+                  disableSelectionOnClick
+                />
+              )}
+            </Paper>
+          </div>
+        </section>
+      </main>
 
       {dialogOpen && selectedActa && (
         <DynamicModelForUsers
           isOpen={dialogOpen}
-          title="Reactivar Acta"
+          title="Reactivar acta"
           content={
             <div>
               <p>
-                ¿Estás seguro de que deseas reactivar la acta de <strong>{selectedActa.materia}</strong> con el motivo{' '}
+                Estas seguro de que deseas reactivar el acta de <strong>{selectedActa.materia}</strong> con el motivo{' '}
                 <strong>{selectedActa.motivo}</strong>?
               </p>
             </div>
@@ -138,3 +209,4 @@ const EliminarActas = () => {
 };
 
 export default EliminarActas;
+

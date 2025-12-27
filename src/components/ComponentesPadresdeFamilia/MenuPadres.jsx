@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MenuPadres.css';
 import AuthContext from '../../auth'; // Importar contexto de autenticación
-import listIcon from '../../assets/icons/list.svg'; // Icono de hamburguesa
+import listIcon from '../../recursos/icons/list.svg'; // Icono de hamburguesa
 
 const MenuPadres = () => {
   const navigate = useNavigate();
@@ -66,3 +66,4 @@ const MenuPadres = () => {
 };
 
 export default MenuPadres;
+

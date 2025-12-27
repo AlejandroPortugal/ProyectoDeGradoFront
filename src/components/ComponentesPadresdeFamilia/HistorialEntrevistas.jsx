@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./HistorialEntrevistas.css";
-import { obtenerEntrevistasPorPadre } from "../../service/teoriaDeColas.service.jsx";
+import { obtenerEntrevistasPorPadre } from "../../servicios/teoriaDeColas.service.jsx";
 import MenuPadres from "./MenuPadres.jsx";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, TextField } from "@mui/material";
 
@@ -174,3 +174,4 @@ const HistorialEntrevistas = () => {
 };
 
 export default HistorialEntrevistas;
+

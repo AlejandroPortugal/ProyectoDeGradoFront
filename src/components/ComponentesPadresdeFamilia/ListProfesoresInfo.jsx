@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import MenuPadres from "./MenuPadres";
-import { getProfesoresConHorarios } from "../../service/profesor.service.jsx";
+import { getProfesoresConHorarios } from "../../servicios/profesor.service.jsx";
 import DynamicModelForUsers from "../DynamicModelForUsers.jsx";
 import "./ListProfesoresInfo.css";
 
@@ -134,3 +134,4 @@ const ListProfesoresInfo = () => {
 };
 
 export default ListProfesoresInfo;
+

@@ -4,10 +4,10 @@ import autoTable from 'jspdf-autotable';
 import * as xlsx from 'xlsx';
 import './ExportActions.css';
 
-import excelIcon from '../assets/icons/excel.svg';
-import pdfIcon from '../assets/icons/pdf.svg';
-import wordIcon from '../assets/icons/word.svg';
-import printIcon from '../assets/icons/Printer.svg';
+import excelIcon from '../recursos/icons/excel.svg';
+import pdfIcon from '../recursos/icons/pdf.svg';
+import wordIcon from '../recursos/icons/word.svg';
+import printIcon from '../recursos/icons/Printer.svg';
 
 const ExportActions = ({ data, context, selectedDate, title, columns }) => {
   const exportDate = selectedDate || new Date().toLocaleDateString();

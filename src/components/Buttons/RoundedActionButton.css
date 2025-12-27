@@ -1,0 +1,51 @@
+.rounded-action-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 100, 20, 0.12);
+  color: #0b3a1a;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+  box-shadow: 0 8px 18px rgba(0, 52, 12, 0.18);
+}
+
+.rounded-action-btn img,
+.rounded-action-btn svg {
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+.rounded-action-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.rounded-action-btn:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.rounded-action-btn:not(:disabled):active {
+  transform: translateY(0);
+}
+
+.rounded-action-btn--success {
+  background: linear-gradient(135deg, #0da552, #008a3c);
+  color: #fff;
+}
+
+.rounded-action-btn--danger {
+  background: linear-gradient(135deg, #f87171, #e11d48);
+  color: #fff;
+}
+
+.rounded-action-btn--whatsapp {
+  background: linear-gradient(135deg, #25d366, #16a34a);
+  color: #0f2916;
+}

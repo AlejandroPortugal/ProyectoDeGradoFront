@@ -1,19 +1,15 @@
-// src/components/Toast.jsx
-import React, { useEffect } from 'react';
-import './Toast.css'; // Asegúrate de tener los estilos en Toast.css
+import React, { useEffect } from "react";
+import "./Toast.css";
 
-const Toast = ({ message, type, onClose }) => {
+const Toast = ({ message, type = "success", onClose, duration = 3000 }) => {
   useEffect(() => {
-    const timer = setTimeout(() => {
-      onClose();
-    }, 3000); // El toast desaparecerá después de 3 segundos
-
-    return () => clearTimeout(timer);
-  }, [onClose]);
+    const t = setTimeout(onClose, duration);
+    return () => clearTimeout(t);
+  }, [onClose, duration]);
 
   return (
-    <div className={`toast-container ${type}`}>
-      <p>{message}</p>
+    <div className={`toast-container ${type}`} role="status" aria-live="polite">
+      <p className="toast-text">{message}</p>
     </div>
   );
 };

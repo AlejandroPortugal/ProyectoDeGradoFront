@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./RegistroContraseña.css";
-import eyeIcon from "../../assets/icons/Eye.svg";
+import eyeIcon from "../../recursos/icons/Eye.svg";
 
 const RegistroContraseña = () => {
   const [password, setPassword] = useState("");
@@ -114,3 +114,4 @@ const RegistroContraseña = () => {
 };
 
 export default RegistroContraseña;
+

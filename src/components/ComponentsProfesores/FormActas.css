@@ -1,141 +1,379 @@
-.form-actas-container {
-    font-family: Arial, sans-serif;
-    width: 80%;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-    border: black solid 4px;
+.actas-layout {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px) 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  font-family: 'Kumbh Sans', sans-serif;
+  color: #0f2916;
+  box-sizing: border-box;
+}
+
+.actas-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(220px, 1.2fr);
+  gap: clamp(18px, 4vw, 32px);
+  padding: clamp(24px, 4vw, 36px);
+  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(0, 100, 20, 0.16) 0%, rgba(0, 52, 0, 0.12) 100%);
+  border: 1px solid rgba(0, 100, 20, 0.18);
+  box-shadow: 0 24px 44px rgba(9, 53, 16, 0.15);
+  align-items: center;
+}
+
+.actas-hero__content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.actas-hero__eyebrow {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-weight: 600;
+  color: rgba(15, 41, 22, 0.6);
+}
+
+.actas-hero__content h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 3.4vw, 2.5rem);
+  color: #0b3a1a;
+}
+
+.actas-hero__content p {
+  margin: 0;
+  color: rgba(15, 41, 22, 0.75);
+  line-height: 1.5;
+  max-width: 560px;
+}
+
+.actas-hero__meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.actas-meta-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 18px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px solid rgba(0, 100, 20, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.actas-meta-card span {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(15, 41, 22, 0.58);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.actas-meta-card strong {
+  color: #0b3a1a;
+  font-size: 1rem;
+}
+
+.actas-hero__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actas-hero__avatar img {
+  width: 100%;
+  max-width: 280px;
+  border-radius: 24px;
+  object-fit: cover;
+  box-shadow: 0 18px 32px rgba(6, 47, 16, 0.25);
+}
+
+.actas-form {
+  background: #fff;
+  border-radius: 28px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 28px 48px rgba(9, 53, 16, 0.08);
+  padding: clamp(24px, 4vw, 36px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.actas-form__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.actas-form__header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #0b3a1a;
+}
+
+.actas-form__header p {
+  margin: 4px 0 0;
+  color: rgba(15, 41, 22, 0.7);
+}
+
+.ghost-button,
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.ghost-button {
+  background: rgba(0, 100, 20, 0.08);
+  color: #0b3a1a;
+}
+
+.ghost-button:hover {
+  background: rgba(0, 100, 20, 0.15);
+}
+
+.primary-button {
+  background: linear-gradient(120deg, #0b7a2a, #0a561d);
+  color: #fff;
+  box-shadow: 0 15px 28px rgba(8, 77, 26, 0.32);
+}
+
+.primary-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 32px rgba(8, 77, 26, 0.4);
+}
+
+.actas-form__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.actas-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.actas-field--full {
+  grid-column: 1 / -1;
+}
+
+.actas-field label {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: rgba(15, 41, 22, 0.78);
+}
+
+.actas-field input,
+.actas-field select,
+.actas-field textarea {
+  border-radius: 14px;
+  border: 1px solid rgba(0, 100, 20, 0.2);
+  padding: 12px 14px;
+  font-size: 0.96rem;
+  background: rgba(249, 252, 249, 0.95);
+  color: #0f2916;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.actas-field input:focus,
+.actas-field select:focus,
+.actas-field textarea:focus {
+  outline: none;
+  border-color: rgba(0, 100, 20, 0.55);
+  box-shadow: 0 0 0 3px rgba(0, 100, 20, 0.18);
+}
+
+.actas-field input:disabled {
+  background: rgba(15, 41, 22, 0.05);
+  color: rgba(15, 41, 22, 0.6);
+}
+
+.actas-field textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.actas-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.acta-preview-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 24, 10, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 999;
+}
+
+.acta-preview-card {
+  width: min(760px, 100%);
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  padding: clamp(16px, 3vw, 28px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.acta-preview-letter {
+  border: 1px solid rgba(13, 34, 22, 0.2);
+  border-radius: 18px;
+  padding: clamp(20px, 4vw, 36px);
+  background: #fffcf4;
+  font-family: 'Times New Roman', serif;
+  color: #0a1a12;
+  line-height: 1.65;
+}
+
+.acta-letter__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.acta-letter__logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.acta-letter__title {
+  flex: 1;
+}
+
+.acta-letter__eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.82rem;
+  color: #0b3a1a;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.acta-preview-letter h2 {
+  text-align: center;
+  margin: 0 0 16px;
+  font-size: 1.6rem;
+}
+
+.acta-letter__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  font-weight: 600;
+}
+
+.acta-letter__section {
+  margin-top: 18px;
+}
+
+.acta-letter__section p {
+  margin: 6px 0;
+}
+
+.acta-letter__signatures {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 28px;
+  margin-top: 36px;
+  text-align: center;
+}
+
+.signature-block {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.signature-line {
+  display: block;
+  width: 80%;
+  border-top: 1px solid rgba(0, 0, 0, 0.7);
+  margin: 32px auto 8px;
+}
+
+.signature-block strong,
+.signature-block small {
+  display: block;
+}
+
+.acta-preview-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.acta-preview-actions button {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 22px;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(120deg, #0b7a2a, #0a561d);
+  color: #fff;
+  box-shadow: 0 14px 28px rgba(8, 77, 26, 0.28);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.acta-preview-actions button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 22px 32px rgba(8, 77, 26, 0.35);
+}
+
+@media (max-width: 960px) {
+  .actas-hero {
+    grid-template-columns: 1fr;
   }
-  
-  .title {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 20px;
-    border: black solid 2px;
-    height: 50px;
-    padding-top: 20px;
+
+  .actas-hero__avatar {
+    order: -1;
+    justify-content: flex-start;
   }
-  
-  .form-header {
-    margin-bottom: 20px;
-    
+
+  .actas-hero__avatar img {
+    max-width: 220px;
   }
-  
-  .student-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    
+}
+
+@media (max-width: 640px) {
+  .actas-layout {
+    padding: 0 16px 32px;
   }
-  
-  .student-input {
+
+  .actas-form__actions {
+    flex-direction: column;
+  }
+
+  .ghost-button,
+  .primary-button {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #e9e9e9;
-    border: black solid 3px;
   }
-  
-  .form-content {
-    display: flex;
-    gap: 20px;
-    border: black solid 4px;
-    border-radius: 4px;
-  }
-  
-  .student-info {
-    width: 30%;
-    text-align: center;
-   
-    margin: 20px;
-    border-radius: 4px;
-  }
-  .student-photo img {
-    width: 250px; /* Ancho fijo para mantener proporciones */
-    height: 250px; /* Alto fijo */
-    border-radius: 4%; /* Hacer la imagen circular */
-    object-fit: cover; /* Ajustar la imagen para que no se deforme */
-    opacity: 1; /* Asegurar que la opacidad sea 100% */
-    border: 2px solid #ccc; /* Agregar borde para mejor claridad */
-    margin-top: 20px;
-  }
-  
-  
-  .info-card p {
-    margin-bottom: 15px;
-  }
-  
-  .field-group input[readonly] {
-    background-color: #f5f5f5;
-    cursor: not-allowed;
-  }
-  
-  
-  .info-card p {
-    margin: 5px 0;
-  }
-  
-  .form-fields {
-    width: 70%;
-  }
-  
-  .field-group {
-    margin-bottom: 15px;
-  }
-  
-  .field-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .field-group select,
-  .field-group input,
-  .field-group textarea {
-    width: 90%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  textarea {
-    resize: none;
-    height: 100px;
-  }
-  
-  .form-buttons {
-    display: flex;
-justify-content: end;
-gap: 10px;
-padding: 10px 20px;
-  }
-  
-  .clear-button {
-    background-color: #d9534f;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 10px 20px;
-  }
-  
-  .clear-button:hover {
-    background-color: #c9302c;
-  }
-  
-  .create-button {
-    background-color: #5cb85c;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .create-button:hover {
-    background-color: #4cae4c;
-  }
-  
+}

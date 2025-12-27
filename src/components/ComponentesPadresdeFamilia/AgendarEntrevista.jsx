@@ -3,8 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import es from 'date-fns/locale/es';
 import 'react-datepicker/dist/react-datepicker.css';
-import { getMotivos } from '../../service/motivo.service';
-import { crearReservaEntrevista } from '../../service/teoriaDeColas.service';
+import { getMotivos } from '../../servicios/motivo.service';
+import { crearReservaEntrevista } from '../../servicios/teoriaDeColas.service';
 import './AgendarEntrevista.css';
 import MenuPadres from './MenuPadres';
 import Toast from '../../components/Toast';
@@ -183,3 +183,4 @@ const AgendarEntrevista = () => {
 };
 
 export default AgendarEntrevista;
+

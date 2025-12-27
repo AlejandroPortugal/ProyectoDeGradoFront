@@ -1,11 +1,11 @@
 import React from 'react';
 import './InicioPadres.css';
-import directoraImg from '../../assets/image/Directora.jpg';
-import docentesImg from '../../assets/image/Profesores.png';
-import campeonatosImg from '../../assets/image/Campeonatos.jpg';
-import desfilesImg from '../../assets/image/desfiles.jpg';
-import ecoclubesImg from '../../assets/image/Ecocubles.png';
-import estudiantesImg from '../../assets/image/Estudiantes.png';
+import directoraImg from '../../recursos/image/Directora.jpg';
+import docentesImg from '../../recursos/image/Profesores.png';
+import campeonatosImg from '../../recursos/image/Campeonatos.jpg';
+import desfilesImg from '../../recursos/image/desfiles.jpg';
+import ecoclubesImg from '../../recursos/image/Ecocubles.png';
+import estudiantesImg from '../../recursos/image/Estudiantes.png';
 import MenuPadres from './MenuPadres';
 
 const InicioPadres = () => {
@@ -69,3 +69,4 @@ const InicioPadres = () => {
 };
 
 export default InicioPadres;
+

@@ -1,16 +1,17 @@
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import { AuthProvider } from './auth';  // Proveedor de autenticación
 import ProtectedRoute from './protectedRoutes.jsx'; // Ruta protegida
 import Menu from './components/Menu';
-import UserManagementHome from './pages/UserManagementHome.jsx';
-import UserManagementPage from './pages/UserManagementPage.jsx';
+import UserManagementHome from './paginas/UserManagementHome.jsx';
+import UserManagementPage from './paginas/UserManagementPage.jsx';
 import Login from './components/Login.jsx';
-import UserManagementForm from './pages/UserManagementForm.jsx';
-import UserProfesorHome from './pages/UserProfesorHome.jsx';
+import UserManagementForm from './paginas/UserManagementForm.jsx';
+import UserProfesorHome from './paginas/UserProfesorHome.jsx';
 import Unauthorized from './components/Unauthorized'; // Asegúrate de crear o importar este componente
 import FormActas from './components/ComponentsProfesores/FormActas.jsx';
 import InicioProfesores from './components/ComponentsProfesores/InicioProfesores.jsx';
-import UserListPadres from './pages/UserListPadres.jsx';
+import UserListPadres from './paginas/UserListPadres.jsx';
 import CitarPadres from './components/ComponentsProfesores/CitarPadres.jsx';
 import ListEntrevistas from './components/ComponentsProfesores/ListEntrevistas.jsx';
 import Informe from './components/Informe.jsx';
@@ -34,6 +35,8 @@ import ConfirmacionCorreo from './components/ComponentesPadresdeFamilia/Confirma
 import ControlIngresos from './components/ControlIngresos.jsx';
 import Configuraciones from './components/Configuraciones.jsx';
 import RecuperarUsuarios from './components/RecuperarUsuarios.jsx';
+import FormularioCreacion from './components/Formularios/FormularioCreacion.jsx';
+import LandingPage from './paginas/LandingPage.jsx';
 
 
 const App = () => {
@@ -47,8 +50,10 @@ const App = () => {
 };
 const AppContent = () => {
   const location = useLocation();
+  const [isMobile, setIsMobile] = useState(false);
 
   const hideMenuRoutes = [
+    "/",
     "/login",
     "/unauthorized",
     "/padres",
@@ -69,15 +74,31 @@ const AppContent = () => {
   const shouldShowMenu = !hideMenuRoutes.some(
     (route) => route.toLowerCase() === location.pathname.toLowerCase()
   );
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  const sidebarWidth = 'clamp(240px, 24vw, 280px)';
+
+  const contentStyle = {
+    marginLeft: shouldShowMenu && !isMobile ? sidebarWidth : '0',
+    padding: '20px',
+    transition: 'margin-left 0.28s ease',
+  };
   
 
   return (
     <>
       {/* Renderiza el menú solo si no está en las rutas de ocultar */}
       {shouldShowMenu && <Menu />}
-      <div style={{ marginLeft: shouldShowMenu ? "250px" : "0", padding: "20px" }}>
+      <div style={contentStyle}>
         <Routes>
           {/* Define tus rutas aquí */}
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
 
@@ -147,21 +168,14 @@ const AppContent = () => {
 
           {/* Administrador */}
           <Route
-            path="/"
+            path="/dashboard"
             element={
               <ProtectedRoute role="Administrador">
                 <UserManagementHome />
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute role="Administrador">
-                <UserManagementHome />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/admin" element={<Navigate to="/dashboard" replace />} />
           <Route
             path="/listar"
             element={
@@ -174,7 +188,7 @@ const AppContent = () => {
             path="/agregar"
             element={
               <ProtectedRoute role="Administrador">
-                <UserManagementForm />
+                <FormularioCreacion />
               </ProtectedRoute>
             }
           />

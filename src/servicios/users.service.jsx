@@ -20,7 +20,7 @@ export const filterUsuarios = (searchTerm) => {
     });
   };
   
-  // Servicio para filtrar usuarios por tÃ©rmino de bÃºsqueda
+  // Servicio para filtrar usuarios por término de búsqueda
   export const filterUsers = async (searchTerm) => {
     return axios.get(`${baseURL}usuarios/filtrar`, {
       params: { searchTerm },
@@ -44,7 +44,7 @@ export const registerUserLogin = async (idUsuario, nombreCompleto, rol, token) =
   
     return axios.post(`${base_URL}ingresoslogin`, payload, {
       headers: {
-        Authorization: `Bearer ${token}`, // Enviar el token para autenticaciÃ³n
+        Authorization: `Bearer ${token}`, // Enviar el token para autenticación
       },
     });
   };
@@ -53,7 +53,7 @@ export const registerUserLogin = async (idUsuario, nombreCompleto, rol, token) =
 export const getIngresos = async (token) => {
     return axios.get(`${base_URL}ingresos`, {
       headers: {
-        Authorization: `Bearer ${token}`, // Token para autenticaciÃ³n
+        Authorization: `Bearer ${token}`, // Token para autenticación
       },
     });
   };
@@ -62,7 +62,7 @@ export const getIngresos = async (token) => {
   export const getUsuariosConIngresos = async (token) => {
     return axios.get(`${base_URL}usuarios-ingresos`, {
       headers: {
-        Authorization: `Bearer ${token}`, // Enviar token para autenticaciÃ³n
+        Authorization: `Bearer ${token}`, // Enviar token para autenticación
       },
     });
   };

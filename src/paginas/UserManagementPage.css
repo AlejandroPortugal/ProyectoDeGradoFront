@@ -1,0 +1,215 @@
+.user-management-page {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: clamp(20px, 4vw, 36px);
+  padding-bottom: clamp(64px, 7vw, 96px);
+  box-sizing: border-box;
+}
+
+.user-management-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.user-management-hero {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(20px, 4vw, 40px);
+  background: linear-gradient(135deg, rgba(0, 100, 20, 0.12) 0%, rgba(0, 52, 0, 0.08) 100%);
+  border: 1px solid rgba(14, 85, 32, 0.12);
+  border-radius: 28px;
+  padding: clamp(26px, 4vw, 40px);
+  box-shadow: 0 24px 44px rgba(9, 46, 21, 0.14);
+  overflow: hidden;
+}
+
+.user-management-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.26), transparent 55%),
+    radial-gradient(circle at 82% 0%, rgba(255, 255, 255, 0.18), transparent 60%);
+  z-index: 0;
+}
+
+.user-management-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.user-management-hero__copy {
+  flex: 1 1 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  color: #0f2916;
+}
+
+.user-management-hero__eyebrow {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: rgba(5, 22, 11, 0.65);
+}
+
+.user-management-hero h2 {
+  margin: 0;
+  font-size: clamp(1.7rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: #0b3a1a;
+}
+
+.user-management-hero p {
+  margin: 0;
+  font-size: clamp(0.96rem, 2.1vw, 1.08rem);
+  line-height: 1.7;
+  color: rgba(11, 34, 18, 0.82);
+}
+
+.user-management-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(14, 85, 32, 0.15);
+}
+
+.user-management-hero__chip {
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(14, 85, 32, 0.22);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 0.88rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.user-management-hero__chip strong {
+  font-weight: 600;
+}
+
+.user-management-hero__stats {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 6px;
+}
+
+.user-management-hero__stat-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 22px;
+  border: 1px solid rgba(14, 85, 32, 0.18);
+  padding: 20px 18px;
+  box-shadow: 0 18px 30px rgba(6, 36, 16, 0.14);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 110px;
+  min-width: 200px;
+  flex: 1 1 200px;
+}
+
+.user-management-hero__stat-count {
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #0a4b24;
+}
+
+.user-management-hero__stat-label {
+  font-size: 0.92rem;
+  color: rgba(9, 38, 19, 0.72);
+}
+
+.user-management-hero__tools {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: -12px;
+}
+
+.user-management-hero__search {
+  width: min(340px, 100%);
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(14, 85, 32, 0.22);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  font-size: 0.96rem;
+  color: #0d331b;
+}
+
+.user-management-hero__search::placeholder {
+  color: rgba(13, 51, 27, 0.55);
+}
+
+.user-management-hero__search:focus {
+  outline: none;
+  border-color: rgba(14, 85, 32, 0.55);
+  box-shadow: 0 0 0 4px rgba(9, 76, 33, 0.16);
+}
+
+.user-management-hero__export {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+}
+
+.user-management-toast {
+  align-self: flex-end;
+}
+
+@media (max-width: 1180px) {
+  .user-management-page {
+    padding-inline: clamp(18px, 4vw, 32px);
+  }
+}
+
+@media (max-width: 1024px) {
+  .user-management-hero {
+    flex-direction: column;
+  }
+
+  .user-management-hero__stats {
+    justify-content: center;
+  }
+
+  .user-management-hero__export {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .user-management-page {
+    padding: 88px 18px 56px;
+  }
+
+  .user-management-hero__tools {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .user-management-hero__export {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 540px) {
+  .user-management-hero__copy {
+    flex-basis: 100%;
+  }
+
+  .user-management-hero__stats {
+    justify-content: stretch;
+  }
+}

@@ -1,8 +1,8 @@
 import React from "react";
 import "./Contacto.css";
-import logo from "../../assets/icons/logo.svg";
-import colegio1 from "../../assets/icons/Colegio1.svg";
-import colegio2 from "../../assets/icons/Colegio2.svg";
+import logo from "../../recursos/icons/logo.svg";
+import colegio1 from "../../recursos/icons/Colegio1.svg";
+import colegio2 from "../../recursos/icons/Colegio2.svg";
 import MenuPadres from "./MenuPadres";
 
 const Contacto = () => {
@@ -45,3 +45,4 @@ const Contacto = () => {
 };
 
 export default Contacto;
+

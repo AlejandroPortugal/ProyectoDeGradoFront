@@ -1,15 +1,16 @@
+
 import React, { useState, useEffect } from 'react';
 import UserForm from '../components/UserForm.jsx';
-import { postAdministrador } from '../service/administrador.service.jsx';
-import { postProfesor } from '../service/profesor.service.jsx';
-import { postPadre } from '../service/PadreDeFamilia.jsx';
-import { postEstudiante } from '../service/Estudiante.service.jsx';
-import { postPsicologo } from '../service/psicologo.service.jsx';
-import { getDirecciones } from '../service/direccion.service.jsx';
-import { getDatePadres } from '../service/PadreDeFamilia.jsx';
+import { postAdministrador } from '../servicios/administrador.service.jsx';
+import { postProfesor } from '../servicios/profesor.service.jsx';
+import { postPadre } from '../servicios/PadreDeFamilia.jsx';
+import { postEstudiante } from '../servicios/Estudiante.service.jsx';
+import { postPsicologo } from '../servicios/psicologo.service.jsx';
+import { getDirecciones } from '../servicios/direccion.service.jsx';
+import { getDatePadres } from '../servicios/PadreDeFamilia.jsx';
 import Toast from '../components/Toast.jsx';
-import { getCursos } from '../service/cursos.service.jsx';
-import { getHorarios } from '../service/horario.service.jsx';  // Importar servicio de horarios
+import { getCursos } from '../servicios/cursos.service.jsx';
+import { getHorarios } from '../servicios/horario.service.jsx';  // Importar servicio de horarios
 import Header from '../components/Header.jsx';
 
 const UserManagementForm = () => {
@@ -131,7 +132,7 @@ const UserManagementForm = () => {
       setToast({ show: true, message: error.response?.data?.error || 'Error al crear usuario', type: 'error' });
     }
   };
-
+  
   // Función para limpiar el formulario
   const handleReset = () => {
     setFormData({
@@ -196,3 +197,4 @@ const UserManagementForm = () => {
 };
 
 export default UserManagementForm;
+

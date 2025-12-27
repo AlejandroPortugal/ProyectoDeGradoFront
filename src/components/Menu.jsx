@@ -1,27 +1,30 @@
-import React, { useState, useContext, useEffect } from 'react';
-
+﻿import React, { useState, useContext, useEffect } from 'react';
 import './Menu.css';
-import { Link, useNavigate } from 'react-router-dom';
-import logo from '../assets/icons/logo.svg';
-import iconHome from '../assets/icons/home-2.svg';
-import iconEntrevista from '../assets/icons/UserCheck.svg'
-import userIcon from '../assets/icons/user.svg';
-import rowIcon from '../assets/icons/Vector.svg';
-import iconInfo from '../assets/icons/File.svg';
-import AuthContext from '../auth.jsx';  // Importa el contexto de autenticación
-import iconAdd from '../assets/icons/add.svg'
-import iconEdit from '../assets/icons/Edit.svg'
-import iconDelete from '../assets/icons/delete.svg'
-import notificationIcon from '../assets/icons/notifications.svg';
-import iconFile from '../assets/icons/File.svg'
-import iconCheck from '../assets/icons/UserCheck.svg'
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import logo from '../recursos/icons/logo.svg';
+import iconHome from '../recursos/icons/home-2.svg';
+import iconEntrevista from '../recursos/icons/UserCheck.svg'
+import userIcon from '../recursos/icons/user.svg';
+import rowIcon from '../recursos/icons/Vector.svg';
+import iconInfo from '../recursos/icons/File.svg';
+import AuthContext from '../auth.jsx';
+import iconAdd from '../recursos/icons/add.svg'
+import iconEdit from '../recursos/icons/Edit.svg'
+import iconDelete from '../recursos/icons/delete.svg'
+import notificationIcon from '../recursos/icons/notifications.svg';
+import iconFile from '../recursos/icons/File.svg'
+import iconCheck from '../recursos/icons/UserCheck.svg'
+import userLogo from '../recursos/icons/userblack.svg';
 
 const Menu = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [DropdownInfo, setDropdownInfo] = useState(false);
   const [DropdownActas, setDropdownActas] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
   
 
   useEffect(() => {
@@ -29,10 +32,34 @@ const Menu = () => {
       navigate('/unauthorized');
     }
   }, [user, navigate]);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile) {
+      setIsMobileMenuOpen(false);
+    }
+  }, [isMobile]);
+
+  useEffect(() => {
+    if (isMobile) {
+      setIsMobileMenuOpen(false);
+    }
+  }, [location.pathname, isMobile]);
   
   const handleLogout = () => {
     logout();
-    navigate('/login'); // Redirigir al login después del logout
+    navigate('/login');
+  };
+
+  const handleProfileClick = () => {
+    navigate('/configs');
   };
 
   const toggleDropdown = () => {
@@ -47,14 +74,49 @@ const Menu = () => {
     setDropdownActas(!DropdownActas);
   };
 
-  // Verificación de roles
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen((prev) => !prev);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  const sidebarClassName = `sidebar${isMobile && isMobileMenuOpen ? ' open' : ''}`;
+
   const isProfesorOrPsicologo = user?.role === 'Profesor' || user?.role === 'Psicologo';
   const isAdministrador = user?.role === 'Administrador';
 
   return (
     <>
+      {isMobile && (
+        <header className="mobile-navbar">
+          <button
+            type="button"
+            className={`mobile-navbar__toggle${isMobileMenuOpen ? ' is-active' : ''}`}
+            aria-label={isMobileMenuOpen ? 'Cerrar menu' : 'Abrir menu'}
+            aria-expanded={isMobileMenuOpen}
+            onClick={toggleMobileMenu}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+          <div className="mobile-navbar__brand">
+            <img src={logo} alt="Loguito" />
+            <span>IDEB SISTEMA ESCOLAR</span>
+          </div>
+        </header>
+      )}
+
+      {isMobile && (
+        <div
+          className={`sidebar-backdrop${isMobileMenuOpen ? ' show' : ''}`}
+          onClick={closeMobileMenu}
+        />
+      )}
     
-      <div className="sidebar">
+      <div className={sidebarClassName}>
         <div className='Img-container'>
           <img src={logo} alt='Loguito' />
         </div>
@@ -64,11 +126,10 @@ const Menu = () => {
             <hr />
           </div>
 
-          {/* Esta opción solo se muestra si el rol es Administrador */}
           {isAdministrador && (
             <li>
               <div className='sidebar-container'>
-                <Link to="/" className="sidebar-link">
+                <Link to="/dashboard" className="sidebar-link">
                   Inicio
                   <i className='Icon-container-menu'>
                     <img src={iconHome} alt='Home' />
@@ -78,12 +139,11 @@ const Menu = () => {
             </li>
           )}
 
-          {/* Gestión de Usuarios solo para Administrador */}
           {isAdministrador && (
             <li>
               <div className='sidebar-container'>
                 <div className="sidebar-link" onClick={toggleDropdown}>
-                  Gestión de Usuarios
+                  Gestion de Usuarios
                   <i className={`Icon-container-menu ${isDropdownOpen ? 'rotate' : ''}`}>
                     <img src={rowIcon} alt='Dropdown' />
                   </i>
@@ -140,12 +200,11 @@ const Menu = () => {
             </ul>
           )}
 
-          {/* Gestión de Informes solo para Administrador */}
           {isAdministrador && (
             <li>
               <div className='sidebar-container'>
                 <div className="sidebar-link" onClick={toggleDropdownInfo}>
-                  Gestión de Informes
+                  Gestion de Informes
                   <i className={`Icon-container-menu ${DropdownInfo ? 'rotate' : ''}`}>
                     <img src={rowIcon} alt='Dropdown' />
                   </i>
@@ -166,7 +225,6 @@ const Menu = () => {
               </li>
             </ul>
           )}
-
 
           {isProfesorOrPsicologo && (
             <li>
@@ -193,14 +251,11 @@ const Menu = () => {
             </li>
           )}
 
-
-
-          {/* Gestión de Actas solo para Profesor o Psicologo */}
           {isProfesorOrPsicologo && (
             <li>
               <div className='sidebar-container'>
                 <div className="sidebar-link" onClick={toggleDropdownActas}>
-                  Gestión de Actas
+                  Gestion de Actas
                   <i className={`Icon-container-menu ${DropdownActas ? 'rotate' : ''}`}>
                     <img src={rowIcon} alt='Dropdown' />
                   </i>
@@ -209,19 +264,17 @@ const Menu = () => {
             </li>
           )}
 
-
-
           {DropdownActas && isProfesorOrPsicologo && (
             <ul className="dropdown">
-              <li className='sidebar-container'>
+              {/*<li className='sidebar-container'>
                 <Link to="/crearActa" className="sidebar-link">
                   Crear Acta
                   <i className='Icon-container-menu'>
                     <img src={iconAdd} alt='Home' />
                   </i>
                 </Link>
-                
-              </li>
+              </li>*/}
+              
              
               <li className='sidebar-container'>
                 <Link to="/editarActa" className="sidebar-link">
@@ -247,13 +300,43 @@ const Menu = () => {
                   </i>
                 </Link>
               </li>
-              
             </ul>
           )}
         </ul>
+
+        {/* Secciï¿½n de usuario en la parte inferior */}
+        <div className="sidebar-footer">
+          <div className='hr-barra'>
+            <hr />
+          </div>
+          <ul className="sidebar-menu">
+            <li>
+              <div className='sidebar-container'>
+                <div className="sidebar-link" onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
+                  Perfil
+                  <i className='Icon-container-menu'>
+                    <img src={userLogo} alt='Perfil' />
+                  </i>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div className='sidebar-container'>
+                <div className="sidebar-link" onClick={handleLogout} style={{ cursor: 'pointer' }}>
+                  Cerrar Sesión
+                  <i className='Icon-container-menu'>
+                    <img src={userIcon} alt='Cerrar Sesión' />
+                  </i>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </>
   );
 };
 
 export default Menu;
+
+
