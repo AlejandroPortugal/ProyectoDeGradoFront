@@ -1,0 +1,300 @@
+.historial-container {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 1320px;
+  text-align: center;
+  margin-top: 50px;
+  position: relative;
+}
+
+.historial-panel {
+  background: linear-gradient(140deg, #ffffff 0%, #f3faf1 100%);
+  padding: 28px 28px 32px;
+  border-radius: 20px;
+  border: 1px solid #e2ebe2;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.historial-panel::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(31, 111, 74, 0.18), transparent 70%);
+  pointer-events: none;
+}
+
+.historial-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f3d2e;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.historial-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+.historial-filters .MuiFormControl-root {
+  min-width: 220px;
+  flex: 1 1 240px;
+}
+
+.historial-filters .MuiInputBase-root {
+  background: #ffffff;
+  border-radius: 12px;
+}
+
+.historial-filters .MuiOutlinedInput-notchedOutline {
+  border-color: #d6e4d8;
+}
+
+.historial-filters .Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #1f6f4a;
+  box-shadow: 0 0 0 3px rgba(31, 111, 74, 0.12);
+}
+
+.historial-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin-bottom: 20px;
+}
+
+.historial-card {
+  background: #ffffff;
+  border: 1px solid #e0ece3;
+  border-radius: 24px;
+  padding: 24px 26px;
+  text-align: left;
+  box-shadow: 0 16px 28px rgba(15, 61, 46, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 260px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  animation: cardRise 0.5s ease both;
+}
+
+.historial-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(31, 111, 74, 0.08), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.historial-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 36px rgba(15, 61, 46, 0.18);
+}
+
+.historial-card:hover::after {
+  opacity: 1;
+}
+
+.historial-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.historial-card__date {
+  font-weight: 800;
+  font-size: 16px;
+  color: #0f3d2e;
+}
+
+.historial-status {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #e2e8f0;
+  color: #1f2937;
+  animation: badgePulse 2.6s ease-in-out infinite;
+}
+
+.status-pendiente {
+  background: #fff4cc;
+  color: #8a6a00;
+}
+
+.status-completado {
+  background: #d4f7dc;
+  color: #166534;
+}
+
+.status-cancelado {
+  background: #fde2e1;
+  color: #b42318;
+}
+
+.historial-card__body {
+  display: grid;
+  gap: 12px;
+}
+
+.historial-card__actions {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.historial-acta-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f3d2e, #1f6f4a);
+  box-shadow: 0 10px 18px rgba(15, 61, 46, 0.22);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.historial-acta-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 22px rgba(15, 61, 46, 0.3);
+}
+
+.historial-acta-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.historial-acta-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.historial-card__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 15px;
+  color: #1f2937;
+}
+
+.historial-card__label {
+  font-weight: 600;
+  color: #0f3d2e;
+}
+
+.historial-card__value {
+  text-align: right;
+  color: #1f2937;
+}
+
+.no-citas {
+  text-align: center;
+  font-style: italic;
+  color: #6b7280;
+  margin: 20px 0;
+}
+
+.loading-text,
+.error-text {
+  text-align: center;
+  color: #6b7280;
+  margin-top: 40px;
+}
+
+@keyframes cardRise {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes badgePulse {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@media (max-width: 1024px) {
+  .historial-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .historial-filters {
+    justify-content: stretch;
+  }
+}
+
+@media (max-width: 768px) {
+  .historial-title {
+    font-size: 22px;
+  }
+
+  .historial-panel {
+    padding: 22px;
+  }
+
+  .historial-card {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .historial-card__row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .historial-card__value {
+    text-align: left;
+  }
+}
+
+.historial-card:nth-child(2) {
+  animation-delay: 0.05s;
+}
+
+.historial-card:nth-child(3) {
+  animation-delay: 0.1s;
+}
+
+.historial-card:nth-child(4) {
+  animation-delay: 0.15s;
+}
+
+.historial-card:nth-child(5) {
+  animation-delay: 0.2s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .historial-card,
+  .historial-status {
+    animation: none;
+    transition: none;
+  }
+}

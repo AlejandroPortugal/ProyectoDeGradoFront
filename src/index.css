@@ -28,6 +28,10 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: #f3f7f2;
+  background-image: url("/patronLineal.webp");
+  background-repeat: repeat;
+  background-size: 240px auto;
 }
 
 h1 {

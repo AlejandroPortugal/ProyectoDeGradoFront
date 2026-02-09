@@ -1,0 +1,98 @@
+.user-menu {
+  background-color: #003400;
+  padding: 10px 0;
+  width: 100%;
+  height: 50px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hamburger-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  margin-left: 10px;
+}
+
+.hamburger-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.menu-list {
+  display: flex;
+  justify-content: space-around;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  padding-top: 5px;
+  transition: max-height 0.3s ease;
+}
+
+.menu-list.open {
+  display: block;
+}
+
+.menu-list {
+  display: none;
+  flex-direction: column;
+  background-color: #003400;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.menu-list.open {
+  max-height: 500px; /* Ajustar según el número de elementos */
+  overflow: auto;
+}
+
+.menu-item {
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 10px 15px;
+  text-align: center;
+}
+
+.menu-item.active {
+  font-weight: bold;
+  color: #a3ffa3;
+}
+
+.menu-item:hover {
+  color: #a3ffa3;
+}
+
+.user-icon {
+  margin-right: 5px;
+}
+
+/* Estilos para pantallas grandes */
+@media (min-width: 768px) {
+  .hamburger-button {
+    display: none;
+  }
+
+  .menu-list {
+    display: flex;
+    flex-direction: row;
+    max-height: none;
+    position: static;
+    background-color: transparent;
+  }
+
+  .menu-item {
+    padding: 5px 15px;
+  }
+}

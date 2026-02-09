@@ -59,7 +59,7 @@ const DynamicModelForUsers = ({
           {onConfirm && !onSave && (
             <button
               type="button"
-              className="users-modal__btn users-modal__btn--danger"
+              className="users-modal__btn users-modal__btn--confirm"
               onClick={onConfirm}
             >
               Confirmar
@@ -69,7 +69,7 @@ const DynamicModelForUsers = ({
           {onCancel && (
             <button
               type="button"
-              className="users-modal__btn users-modal__btn--ghost"
+              className="users-modal__btn users-modal__btn--danger"
               onClick={onCancel}
             >
               Cancelar

@@ -1,0 +1,331 @@
+.citar-padres-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: clamp(18px, 3vw, 36px);
+  font-family: "Kumbh Sans", sans-serif;
+  color: #0f2916;
+}
+
+.citar-hero {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: clamp(16px, 3vw, 26px);
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(0, 100, 20, 0.12), rgba(7, 85, 38, 0.17));
+  border: 1px solid rgba(0, 100, 20, 0.14);
+  box-shadow: 0 18px 34px -28px rgba(0, 52, 12, 0.45);
+}
+
+.citar-hero__content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.citar-hero__eyebrow {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: rgba(15, 41, 22, 0.6);
+}
+
+.citar-hero__content h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 2.6vw, 2rem);
+  line-height: 1.2;
+  color: #083b1f;
+}
+
+.citar-hero__content p {
+  margin: 0;
+  line-height: 1.5;
+  color: rgba(11, 34, 18, 0.75);
+}
+
+.citar-hero__info {
+  flex: 1 1 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.citar-hero__chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+}
+
+.citar-hero__chips article {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(0, 100, 20, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.citar-hero__chips small {
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: rgba(15, 41, 22, 0.65);
+}
+
+.citar-hero__chips strong {
+  font-size: 1.05rem;
+  color: #005520;
+  word-break: break-word;
+}
+
+.citar-hero__card {
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 100, 20, 0.12);
+  box-shadow: 0 14px 24px -22px rgba(0, 52, 12, 0.32);
+}
+
+.citar-hero__card span {
+  display: block;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(15, 41, 22, 0.65);
+  margin-bottom: 12px;
+}
+
+.citar-hero__card ul {
+  margin: 0;
+  padding-left: 18px;
+  color: rgba(15, 41, 22, 0.82);
+  line-height: 1.5;
+}
+
+.citar-card {
+  background: #ffffff;
+  border-radius: 22px;
+  border: 1px solid rgba(0, 100, 20, 0.1);
+  box-shadow: 0 18px 36px rgba(0, 52, 12, 0.1);
+  padding: clamp(18px, 3vw, 34px);
+}
+
+.citar-section {
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(248, 250, 248, 0.96);
+  border: 1px solid rgba(0, 100, 20, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.citar-section__header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #0b3a1a;
+}
+
+.citar-section__header p {
+  margin: 4px 0 0;
+  color: rgba(15, 41, 22, 0.6);
+  font-size: 0.88rem;
+}
+
+.citar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.citar-grid--contact .citar-field {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.citar-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  min-width: 0;
+}
+
+.citar-field label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(15, 41, 22, 0.82);
+}
+
+.citar-checkbox {
+  justify-content: center;
+}
+
+.citar-checkbox__control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: rgba(15, 41, 22, 0.78);
+}
+
+.citar-checkbox__control input {
+  width: 18px;
+  height: 18px;
+}
+
+.citar-input,
+.citar-textarea {
+  border: 1px solid rgba(0, 0, 0, 0.13);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.citar-input:focus,
+.citar-textarea:focus {
+  border-color: rgba(0, 100, 20, 0.5);
+  box-shadow: 0 0 0 3px rgba(0, 100, 20, 0.18);
+  outline: none;
+}
+
+.citar-input--readonly {
+  background: rgba(245, 247, 245, 0.9);
+  color: rgba(15, 41, 22, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.citar-textarea {
+  min-height: 160px;
+  resize: vertical;
+}
+
+.citar-textarea--largo {
+  min-height: 200px;
+}
+
+.citar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.citar-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.citar-btn:hover {
+  transform: translateY(-1px);
+}
+
+.citar-btn:active {
+  transform: translateY(0);
+}
+
+.citar-btn--ghost {
+  background: rgba(220, 38, 38, 0.12);
+  color: #a11212;
+  border: 1px solid rgba(220, 38, 38, 0.26);
+}
+
+.citar-btn--ghost:hover {
+  box-shadow: 0 12px 24px -18px rgba(220, 38, 38, 0.7);
+}
+
+.citar-btn:not(.citar-btn--ghost) {
+  background: linear-gradient(135deg, #0d8a3a, #066328);
+  color: #fff;
+  box-shadow: 0 16px 30px -18px rgba(6, 99, 40, 0.8);
+}
+
+.citar-btn--whatsapp {
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  border: none;
+  color: #fff;
+  box-shadow: 0 16px 30px -18px rgba(18, 140, 126, 0.7);
+}
+
+.citar-btn--whatsapp:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.citar-btn--calendar {
+  background: linear-gradient(135deg, #4285f4, #1967d2);
+  color: #fff;
+  box-shadow: 0 16px 30px -18px rgba(25, 103, 210, 0.7);
+}
+
+.citar-btn--calendar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.citar-meet-card {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(37, 211, 102, 0.08);
+  border: 1px solid rgba(18, 140, 126, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.citar-meet-card a {
+  color: #0b5ed7;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.citar-meet-card small {
+  color: rgba(15, 41, 22, 0.7);
+}
+
+@media (max-width: 680px) {
+  .citar-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .citar-btn {
+    width: 100%;
+  }
+
+  .citar-hero {
+    flex-direction: column;
+  }
+
+  .citar-hero__content h1 {
+    font-size: 1.45rem;
+  }
+
+  .citar-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .citar-grid {
+    grid-template-columns: repeat(4, minmax(220px, 1fr));
+  }
+}

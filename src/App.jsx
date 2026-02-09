@@ -3,40 +3,36 @@ import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'r
 import { AuthProvider } from './auth';  // Proveedor de autenticación
 import ProtectedRoute from './protectedRoutes.jsx'; // Ruta protegida
 import Menu from './components/Menu';
-import UserManagementHome from './paginas/UserManagementHome.jsx';
-import UserManagementPage from './paginas/UserManagementPage.jsx';
-import Login from './components/Login.jsx';
-import UserManagementForm from './paginas/UserManagementForm.jsx';
-import UserProfesorHome from './paginas/UserProfesorHome.jsx';
+import UserManagementHome from './features/administracion/pages/UserManagementHome.jsx';
+import UserManagementPage from './features/administracion/pages/UserManagementPage.jsx';
+import Login from './features/auth/pages/Login.jsx';
 import Unauthorized from './components/Unauthorized'; // Asegúrate de crear o importar este componente
-import FormActas from './components/ComponentsProfesores/FormActas.jsx';
-import InicioProfesores from './components/ComponentsProfesores/InicioProfesores.jsx';
-import UserListPadres from './paginas/UserListPadres.jsx';
-import CitarPadres from './components/ComponentsProfesores/CitarPadres.jsx';
-import ListEntrevistas from './components/ComponentsProfesores/ListEntrevistas.jsx';
-import Informe from './components/Informe.jsx';
-import ListActas from './components/ComponentsProfesores/ListEstudiantes.jsx'
-
-import EditarActa from './components/ComponentsProfesores/EditarActa.jsx';
-import ListEstudiantes from './components/ComponentsProfesores/ListEstudiantes.jsx';
-import ListaActas from './components/ComponentsProfesores/ListaActas.jsx';
-import EliminarActas from './components/ComponentsProfesores/EliminarActas.jsx';
-import MenuPadres from '../src/components/ComponentesPadresdeFamilia/MenuPadres.jsx';
-import ListaProfesoresEntrevista from './components/ComponentesPadresdeFamilia/ListaProfesoresEntrevista.jsx';
-import AgendarEntrevista from './components/ComponentesPadresdeFamilia/AgendarEntrevista.jsx';
-import InicioPadres from './components/ComponentesPadresdeFamilia/InicioPadres.jsx';
-import ListProfesoresInfo from './components/ComponentesPadresdeFamilia/ListProfesoresInfo.jsx';
-import HistorialEntrevistas from './components/ComponentesPadresdeFamilia/HistorialEntrevistas.jsx';
-import Contacto from './components/ComponentesPadresdeFamilia/Contacto.jsx';
-import RegistroPadres from './components/ComponentesPadresdeFamilia/RegistroPadres.jsx';
-import RegistroContraseña from './components/ComponentesPadresdeFamilia/RegistroContraseña.jsx';
-import RegistroDatos from './components/ComponentesPadresdeFamilia/RegistroDatos.jsx';
-import ConfirmacionCorreo from './components/ComponentesPadresdeFamilia/ConfirmacionCorreo.jsx';
-import ControlIngresos from './components/ControlIngresos.jsx';
-import Configuraciones from './components/Configuraciones.jsx';
-import RecuperarUsuarios from './components/RecuperarUsuarios.jsx';
-import FormularioCreacion from './components/Formularios/FormularioCreacion.jsx';
-import LandingPage from './paginas/LandingPage.jsx';
+import FormActas from './features/actas/pages/FormActas.jsx';
+import InicioProfesores from './features/inicioDocente/pages/InicioProfesores.jsx';
+import UserListPadres from './features/padres/pages/UserListPadres.jsx';
+import CitarPadres from './features/entrevistas/pages/CitarPadres.jsx';
+import ListEntrevistas from './features/entrevistas/pages/ListEntrevistas.jsx';
+import Informe from './features/administracion/pages/Informe.jsx';
+  
+import EditarActa from './features/actas/pages/EditarActa.jsx';
+import ListEstudiantes from './features/estudiantes/pages/ListEstudiantes.jsx';
+import ListaActas from './features/actas/pages/ListaActas.jsx';
+import EliminarActas from './features/actas/pages/EliminarActas.jsx';
+import ListaProfesoresEntrevista from './features/padres/pages/ListaProfesoresEntrevista.jsx';
+import AgendarEntrevista from './features/padres/pages/AgendarEntrevista.jsx';
+import InicioPadres from './features/padres/pages/InicioPadres.jsx';
+import ListProfesoresInfo from './features/padres/pages/ListProfesoresInfo.jsx';
+import HistorialEntrevistas from './features/padres/pages/HistorialEntrevistas.jsx';
+import Contacto from './features/padres/pages/Contacto.jsx';
+import RegistroPadres from './features/padres/pages/RegistroPadres.jsx';
+import RegistroContraseña from './features/padres/pages/RegistroContraseña.jsx';
+import RegistroDatos from './features/padres/pages/RegistroDatos.jsx';
+import ConfirmacionCorreo from './features/padres/pages/ConfirmacionCorreo.jsx';
+import ControlIngresos from './features/administracion/pages/ControlIngresos.jsx';
+import Configuraciones from './features/configuracion/pages/Configuraciones.jsx';
+import RecuperarUsuarios from './features/administracion/pages/RecuperarUsuarios.jsx';
+import FormularioCreacion from './features/administracion/pages/FormularioCreacion.jsx';
+import LandingPage from './features/landing/pages/LandingPage.jsx';
 
 
 const App = () => {

@@ -163,12 +163,29 @@
   box-shadow: 0 12px 22px rgba(8, 45, 22, 0.18);
 }
 
+.users-modal__btn--confirm {
+  background: rgba(11, 58, 31, 0.1);
+  color: #0c3a1e;
+  border: 1px solid rgba(11, 58, 31, 0.18);
+}
+
+.users-modal__btn--confirm:hover {
+  background: linear-gradient(135deg, #1f8c46, #0c682e);
+  color: #ffffff;
+}
+
 .users-modal__btn--primary {
   background: linear-gradient(135deg, #1f8c46, #0c682e);
   color: #ffffff;
 }
 
 .users-modal__btn--danger {
+  background: rgba(214, 73, 51, 0.14);
+  color: #b83221;
+  border: 1px solid rgba(214, 73, 51, 0.3);
+}
+
+.users-modal__btn--danger:hover {
   background: linear-gradient(135deg, #d64933, #b83221);
   color: #ffffff;
 }

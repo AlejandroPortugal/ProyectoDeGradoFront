@@ -25,7 +25,7 @@ const UserTable = ({
   onFilterChange,
 }) => {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
   const [internalFilter, setInternalFilter] = useState("");
 
   const handleChangePage = (event, newPage) => {
@@ -33,7 +33,7 @@ const UserTable = ({
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(parseInt(event.target.value, 20));
     setPage(0);
   };
 
@@ -119,7 +119,7 @@ const UserTable = ({
             <TableBody>
               {filteredUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="user-table-empty">
+                  <TableCell colSpan={20} className="user-table-empty">
                     No se encontraron usuarios con ese criterio de busqueda.
                   </TableCell>
                 </TableRow>
@@ -247,7 +247,7 @@ const UserTable = ({
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[20, 30, 40]}
         />
       </Paper>
     </div>

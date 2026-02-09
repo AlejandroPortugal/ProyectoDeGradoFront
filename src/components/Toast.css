@@ -2,7 +2,7 @@
 
 .toast-container {
   position: fixed;
-  top: 24px;              /* <- arriba */
+  top: 72px;              /* deja espacio para barras fijas */
   right: 24px;            /* <- a la derecha */
   /* bottom: 24px;  QUITADO */
   padding: 14px 18px;
@@ -10,7 +10,7 @@
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
   background: #333;       /* fallback */
   color: #fff;            /* fallback */
-  z-index: 2000;
+  z-index: 100000;
   transform: translateY(-10px);
   animation: toastDown 260ms ease-out forwards;
   pointer-events: none;   /* no bloquea clics en la UI */
@@ -20,13 +20,14 @@
   margin: 0;
   font-weight: 600;
   letter-spacing: .2px;
+  color: #fff;
 }
 
 /* Colores por tipo */
 .toast-container.success { background-color: #28a745; color: #fff; }
 .toast-container.error   { background-color: #dc3545; color: #fff; }
 .toast-container.info    { background-color: #0d6efd; color: #fff; }
-.toast-container.warning { background-color: #ffc107; color: #111; }
+.toast-container.warning { background-color: #ffc107; color: #fff; }
 
 /* Animación: pequeño “drop” desde arriba */
 @keyframes toastDown {
@@ -37,7 +38,7 @@
 /* Opcional: mejor en móviles */
 @media (max-width: 600px) {
   .toast-container {
-    top: 12px;
+    top: 62px;
     right: 12px;
     left: 12px;
   }

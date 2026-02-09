@@ -1,0 +1,569 @@
+.lista-actas-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding: 0 clamp(12px, 4vw, 32px) 40px;
+  box-sizing: border-box;
+  font-family: 'Kumbh Sans', sans-serif;
+  color: #0f2916;
+}
+
+.lista-actas-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(220px, 1.3fr);
+  gap: clamp(18px, 4vw, 32px);
+  padding: clamp(24px, 4vw, 36px);
+  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(0, 100, 20, 0.16) 0%, rgba(0, 52, 0, 0.12) 100%);
+  border: 1px solid rgba(0, 100, 20, 0.18);
+  box-shadow: 0 24px 44px rgba(9, 53, 16, 0.15);
+  align-items: center;
+}
+
+.lista-actas-hero__content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+.lista-actas-hero__eyebrow {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-weight: 600;
+  color: rgba(15, 41, 22, 0.6);
+}
+
+.lista-actas-hero__content h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 3.4vw, 2.5rem);
+  color: #0b3a1a;
+}
+
+.lista-actas-hero__content p {
+  margin: 0;
+  color: rgba(15, 41, 22, 0.78);
+  line-height: 1.5;
+}
+
+.lista-actas-hero__meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.lista-actas-meta-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 18px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px solid rgba(0, 100, 20, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.lista-actas-meta-card span {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(15, 41, 22, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.lista-actas-meta-card strong {
+  color: #0b3a1a;
+  font-size: 1rem;
+}
+
+.lista-actas-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.lista-actas-hero__input-group {
+  flex: 1 1 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.lista-actas-hero__input-group label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: rgba(15, 41, 22, 0.72);
+}
+
+.lista-actas-hero__input-group input {
+  border-radius: 14px;
+  border: 1px solid rgba(0, 100, 20, 0.28);
+  padding: 12px 14px;
+  font-size: 0.96rem;
+  background: rgba(255, 255, 255, 0.88);
+  color: #0f2916;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.lista-actas-hero__input-group input:focus {
+  outline: none;
+  border-color: rgba(0, 100, 20, 0.52);
+  box-shadow: 0 0 0 3px rgba(0, 100, 20, 0.18);
+}
+
+.lista-actas-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 26px;
+  background: linear-gradient(120deg, #0b7a2a, #0a561d);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 15px 28px rgba(8, 77, 26, 0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  white-space: nowrap;
+}
+
+.lista-actas-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 32px rgba(8, 77, 26, 0.4);
+}
+
+.lista-actas-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.lista-actas-hero__highlight {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid rgba(0, 100, 20, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  min-width: 0;
+}
+
+.lista-actas-hero__highlight span {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: rgba(15, 41, 22, 0.62);
+}
+
+.lista-actas-hero__highlight strong {
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  color: #0b3a1a;
+}
+
+.lista-actas-hero__highlight p {
+  margin: 0;
+  color: rgba(15, 41, 22, 0.72);
+}
+
+.lista-actas-hero__highlight small {
+  color: rgba(15, 41, 22, 0.58);
+  font-weight: 600;
+}
+
+.lista-actas-hero__next {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(0, 100, 20, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lista-actas-hero__next span {
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(15, 41, 22, 0.62);
+}
+
+.lista-actas-hero__next-content strong {
+  color: #0b3a1a;
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  line-height: 1.1;
+}
+
+.lista-actas-hero__next-content p {
+  margin: 0;
+  color: rgba(15, 41, 22, 0.75);
+}
+
+.lista-actas-hero__next-content small {
+  color: rgba(15, 41, 22, 0.6);
+}
+
+.lista-actas-panel {
+  background: #fff;
+  border-radius: 28px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 28px 48px rgba(9, 53, 16, 0.08);
+  padding: clamp(24px, 4vw, 36px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.lista-actas-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.lista-actas-panel__header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #0b3a1a;
+}
+
+.lista-actas-panel__header p {
+  margin: 4px 0 0;
+  color: rgba(15, 41, 22, 0.7);
+}
+
+.lista-actas-panel__table-wrapper {
+  width: 100%;
+  max-width: none;
+}
+
+.lista-actas-panel__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: clamp(36px, 6vw, 48px) 24px;
+  color: rgba(15, 41, 22, 0.7);
+  text-align: center;
+}
+
+.lista-actas-loader {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid rgba(0, 100, 20, 0.18);
+  border-top-color: #007c1f;
+  animation: lista-actas-spin 1s linear infinite;
+}
+
+@keyframes lista-actas-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 8px;
+  align-items: center;
+}
+
+.action-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.16);
+}
+
+.view-btn {
+  background: #0a7a1f;
+}
+
+.edit-btn {
+  background: #c48c0f;
+}
+
+.delete-btn {
+  background: #9c1a1a;
+}
+
+.export-btn {
+  background: #d97706;
+}
+
+.acta-edit-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.acta-edit-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 25, 12, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+.acta-edit-modal__card {
+  position: relative;
+  width: min(720px, 100%);
+  background: #fff;
+  border-radius: 24px;
+  padding: clamp(20px, 3vw, 32px);
+  box-shadow: 0 26px 60px rgba(9, 53, 16, 0.28);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.acta-edit-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.acta-edit-modal__eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  color: rgba(15, 41, 22, 0.6);
+  font-weight: 700;
+}
+
+.acta-edit-modal__header h2 {
+  margin: 6px 0 0;
+  font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+  color: #0b3a1a;
+}
+
+.acta-edit-modal__close {
+  border: none;
+  background: #f0f4f0;
+  color: #0f2916;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.acta-edit-modal__close:hover {
+  background: #e3ede6;
+  transform: scale(1.03);
+}
+
+.acta-edit-modal__body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.acta-edit-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.acta-edit-modal__field label {
+  font-weight: 600;
+  color: rgba(15, 41, 22, 0.74);
+}
+
+.acta-edit-modal__field--full {
+  grid-column: 1 / -1;
+}
+
+.acta-edit-modal__control,
+.acta-edit-modal__textarea {
+  border-radius: 14px;
+  border: 1px solid rgba(0, 100, 20, 0.28);
+  padding: 12px 14px;
+  font-size: 1rem;
+  background: #f9fbf9;
+  color: #0f2916;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.acta-edit-modal__control:focus,
+.acta-edit-modal__textarea:focus {
+  outline: none;
+  border-color: rgba(0, 100, 20, 0.55);
+  box-shadow: 0 0 0 3px rgba(0, 100, 20, 0.18);
+}
+
+.acta-edit-modal__textarea {
+  min-height: 160px;
+  resize: vertical;
+}
+
+.acta-edit-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.acta-edit-modal__btn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.acta-edit-modal__btn--primary {
+  background: linear-gradient(120deg, #0b7a2a, #0a561d);
+  color: #fff;
+  box-shadow: 0 14px 24px rgba(8, 77, 26, 0.28);
+}
+
+.acta-edit-modal__btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 28px rgba(8, 77, 26, 0.32);
+}
+
+.acta-edit-modal__btn--ghost {
+  background: #f4f6f2;
+  color: #0f2916;
+}
+
+@media (max-width: 640px) {
+  .acta-edit-modal {
+    padding: 16px;
+  }
+
+  .acta-edit-modal__card {
+    padding: 18px;
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .lista-actas-panel__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 960px) {
+  .lista-actas-hero {
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
+
+  .lista-actas-hero__highlight {
+    width: 100%;
+    padding: 18px;
+    gap: 10px;
+  }
+
+  .lista-actas-hero__meta {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+
+  .lista-actas-hero__actions {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 720px) {
+  .lista-actas-panel__table-wrapper {
+    overflow-x: auto;
+  }
+
+  .lista-actas-panel__table {
+    min-width: 600px;
+  }
+
+  .lista-actas-hero__highlight {
+    padding: 12px;
+    border-radius: 12px;
+    max-width: calc(100% - 8px);
+    margin: 0 auto;
+  }
+
+  .lista-actas-hero__highlight strong {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+    line-height: 1.1;
+  }
+
+  .lista-actas-hero__next {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 640px) {
+  .lista-actas-layout {
+    padding: 0 16px 28px;
+  }
+
+  .lista-actas-hero__actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .lista-actas-btn {
+    width: 100%;
+  }
+
+  .lista-actas-hero__highlight {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .lista-actas-hero__next {
+    padding: 12px;
+    border-radius: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lista-actas-hero__input-group {
+    flex: 1 1 120px;
+  }
+
+  .lista-actas-hero__input-group input {
+    width: 100%;
+  }
+
+  .lista-actas-hero__highlight {
+    padding: 10px;
+    border-radius: 12px;
+    max-width: calc(100% - 12px);
+    margin: 0 auto;
+  }
+
+  .lista-actas-hero__highlight p,
+  .lista-actas-hero__highlight small {
+    font-size: 0.88rem;
+  }
+}
