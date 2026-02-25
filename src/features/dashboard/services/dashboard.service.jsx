@@ -1,56 +1,51 @@
-import axios from 'axios';
-
-const base_URL = 'http://localhost:4000/';
+import { api } from "../../service/api"; 
+// Ajusta la ruta si tu archivo está más/menos profundo
 
 export const getActiveUsersCount = async () => {
-    const response = await axios.get(`${base_URL}cantidad/usuarios`);
-    return response.data.total;
+  const { data } = await api.get("/cantidad/usuarios");
+  return data.total;
 };
 
 export const getActiveProfessorsCount = async () => {
-    const response = await axios.get(`${base_URL}cantidad/profesores`);
-    return response.data.total;
+  const { data } = await api.get("/cantidad/profesores");
+  return data.total;
 };
 
-//Entrevistas semanales
+// Entrevistas semanales
 export const getWeeklyInterviews = async () => {
-    try {
-      const response = await axios.get(`${base_URL}entrevistas/semanales`);
-
-      return response.data;
-    } catch (error) {
-      console.error("Error en la solicitud Axios:", error);
-      return [];
-    }
-  };
+  try {
+    const { data } = await api.get("/entrevistas/semanales");
+    return data;
+  } catch (error) {
+    console.error("Error en la solicitud:", error);
+    return [];
+  }
+};
 
 export const getInterviewStatusCounts = async () => {
-    const response = await axios.get(`${base_URL}entrevistas/estado`);
-    return response.data;
+  const { data } = await api.get("/entrevistas/estado");
+  return data;
 };
 
 export const getMostRequestedSubject = async () => {
-    try {
-      // Realiza la solicitud al backend para obtener las materias más demandadas
-      const response = await axios.get(`${base_URL}materia/masDemandada`);
-  
-      // Verifica si la respuesta es un array
-      if (Array.isArray(response.data)) {
-        // Mapea los datos al formato requerido por el gráfico
-        return response.data.map((item, index) => ({
-          id: index,
-          value: parseInt(item.cantidad, 10),
-          label: item.nombre
-        }));
-      }
-      return [];
-    } catch (error) {
-      console.error("Error al obtener la materia más demandada:", error);
-      return [];
+  try {
+    const { data } = await api.get("/materia/masDemandada");
+
+    if (Array.isArray(data)) {
+      return data.map((item, index) => ({
+        id: index,
+        value: parseInt(item.cantidad, 10),
+        label: item.nombre,
+      }));
     }
-  };
+    return [];
+  } catch (error) {
+    console.error("Error al obtener la materia más demandada:", error);
+    return [];
+  }
+};
 
 export const getMostRequestedProfessor = async () => {
-    const response = await axios.get(`${base_URL}profesor/mas-demandado`);
-    return response.data.profesor;
+  const { data } = await api.get("/profesor/mas-demandado");
+  return data.profesor;
 };

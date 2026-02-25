@@ -1,23 +1,24 @@
-import axios from 'axios';
+import { api } from "../../service/api";
 
-const base_URL = 'http://localhost:4000/';
+
 
 export const getPsicologo = () => {
-    return axios.get(`${base_URL}obtener/psicologos`);
+    return api.get(`/obtener/psicologos`);
 };
 
 export const getPsicologoById = (idpsicologo) => {
-    return axios.get(`${base_URL}obtener/psicologosById/${idpsicologo}`);  // Se asegura de recibir el ID del psicólogo
+    return api.get(`/obtener/psicologosById/${idpsicologo}`);  // Se asegura de recibir el ID del psicólogo
 };
 
 export const postPsicologo = (formData) => {
-    return axios.post(`${base_URL}crear/psicologo`, formData);
+    return api.post(`/crear/psicologo`, formData);
 };
 
 export const putPsicologo = (idpsicologo, formData) => {
-    return axios.put(`${base_URL}actualizar/psicologo/${idpsicologo}`, formData);  // Se pasa el ID del psicólogo en la URL
+    return api.put(`/actualizar/psicologo/${idpsicologo}`, formData);  // Se pasa el ID del psicólogo en la URL
 };
 
 export const deletePsicologo = (idpsicologo) => {
-    return axios.delete(`${base_URL}eliminar/psicologo/${idpsicologo}`);  // Se pasa el ID del psicólogo en la URL
+    return api.delete(`/eliminar/psicologo/${idpsicologo}`);  // Se pasa el ID del psicólogo en la URL
 };
+

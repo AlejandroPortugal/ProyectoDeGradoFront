@@ -1,19 +1,20 @@
-import axios from 'axios';
+import { api } from "../../service/api";
 
-const base_URL = 'http://localhost:4000/';
+
 
 
 export const getHorarios = () => {
-    return axios.get(`${base_URL}obtener/horarios`);
+    return api.get(`/obtener/horarios`);
 };
 
 
 
 export const getHorariosById = (idhorario) => {
-    return axios.get(`${base_URL}obtener/horario/${idhorario}`); // El ID debe estar presente en la URL
+    return api.get(`/obtener/horario/${idhorario}`); // El ID debe estar presente en la URL
 };
 
 // Horario + materia asignada para un profesor especifico
 export const getHorarioByProfesor = (idProfesor) => {
-    return axios.get(`${base_URL}obtener/horario/profesor/${idProfesor}`);
+    return api.get(`/obtener/horario/profesor/${idProfesor}`);
 };
+

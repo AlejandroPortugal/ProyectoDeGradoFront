@@ -1,20 +1,21 @@
-import axios from 'axios';
-const base_URL = 'http://localhost:4000/';
+import { api } from "../../service/api";
 
-export const getMaterias = () => axios.get(`${base_URL}materias`);
+
+export const getMaterias = () => api.get(`/materias`);
 
 export const getMateria = () => {
-    return axios.get(`${base_URL}obtener/materia`);
+    return api.get(`/obtener/materia`);
 };
 
 export const getMateriaById = (idMateria) => {
-    return axios.get(`${base_URL}obtener/materiaById/${idMateria}`);
+    return api.get(`/obtener/materiaById/${idMateria}`);
 };
 
 export const getMateriaForPsicologo = () => {
-    return axios.get(`${base_URL}obtener/materiaForPsicologo`);
+    return api.get(`/obtener/materiaForPsicologo`);
 };
 
 export const getMateriaForProfesor = () => {
-    return axios.get(`${base_URL}obtener/materiaForProfesor`);
+    return api.get(`/obtener/materiaForProfesor`);
 };
+

@@ -1,43 +1,43 @@
 // teoriaDeColas.service.jsx
-import axios from 'axios'
+import { api } from "../../service/api"
 
-const base_URL = 'http://localhost:4000/'
+
 
 
 export const obtenerColaEsperaPrioridadFIFO = (params = {}) => {
-    return axios.get(`${base_URL}colaEspera`, { params });
+    return api.get(`/colaEspera`, { params });
 };
 
 export const obtenerListaEntrevista = () => {
-    return axios.get(`${base_URL}listaEntrevistas`);
+    return api.get(`/listaEntrevistas`);
 };
 
 
 export const agendarEntrevista = (formData) => {
-    return axios.post(`${base_URL}agendarEntrevista`, formData);
+    return api.post(`/agendarEntrevista`, formData);
 };
 
 export const crearReservaEntrevista = (data) => {
-    return axios.post(`${base_URL}crear/reservarentrevista`, data);
+    return api.post(`/crear/reservarentrevista`, data);
   };
 
 // Servicio para enviar un correo electrónico
 export const enviarCorreo = (data) => {
-    return axios.post(`${base_URL}enviarCorreo`, data);
+    return api.post(`/enviarCorreo`, data);
 };
 // Servicio para cambiar el estado de la entrevista
 export const eliminarEntrevista = (idReservarEntrevista, nuevoEstado) => {
-    return axios.put(`${base_URL}eliminarEntrevista/${idReservarEntrevista}`, { nuevoEstado });
+    return api.put(`/eliminarEntrevista/${idReservarEntrevista}`, { nuevoEstado });
 };
 
 
 // Nuevo Servicio para obtener entrevistas por rango de fechas
 export const obtenerListaEntrevistaPorRango = (fechas) => {
-    return axios.post(`${base_URL}obtener/entrevistas/rango`, fechas);
+    return api.post(`/obtener/entrevistas/rango`, fechas);
 };
 
 export const obtenerEntrevistasPorPadre = (idPadre) => {
-    return axios.get(`${base_URL}verEntrevistasPadres/${idPadre}`);
+    return api.get(`/verEntrevistasPadres/${idPadre}`);
   };
   
 
@@ -51,12 +51,13 @@ export const obtenerListaEntrevistaPorFecha = (fecha, idProfesor, idPsicologo) =
     if (idPsicologo !== null && idPsicologo !== undefined && idPsicologo !== "") {
         params.idPsicologo = idPsicologo;
     }
-    return axios.get(`${base_URL}listaEntrevistas/${fecha}`, {
+    return api.get(`/listaEntrevistas/${fecha}`, {
         params,
     });
 };
 
 export const obtenerFechasHabilitadas = (params = {}) => {
-    return axios.get(`${base_URL}entrevistas/fechas-habilitadas`, { params });
+    return api.get(`/entrevistas/fechas-habilitadas`, { params });
 };
+
 

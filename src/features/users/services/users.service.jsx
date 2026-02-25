@@ -1,19 +1,19 @@
-import axios from 'axios'
+import { api } from "../../service/api"
 
-const base_URL = 'http://localhost:4000/'
+
 
 export const getUsuarios = async () => {
-    return axios.get(`${base_URL}obtener/usuarios`);
+    return api.get(`/obtener/usuarios`);
 };
 
 // Servicio para filtrar usuarios
 export const filterUsuarios = (searchTerm) => {
-    return axios.get(`${baseURL}usuarios/filtrar`, { params: { searchTerm } });
+    return api.get(`/usuarios/filtrar`, { params: { searchTerm } });
   };
 
   // Servicio para obtener todos los usuarios del sistema
   export const getAllUserEntries = async (token) => {
-    return axios.get(`${baseURL}/obtener/usuarios`, {
+    return api.get(`/obtener/usuarios`, {
       headers: {
         Authorization: `Bearer ${token}`, // Incluir el token en la cabecera
       },
@@ -22,7 +22,7 @@ export const filterUsuarios = (searchTerm) => {
   
   // Servicio para filtrar usuarios por término de búsqueda
   export const filterUsers = async (searchTerm) => {
-    return axios.get(`${baseURL}usuarios/filtrar`, {
+    return api.get(`/usuarios/filtrar`, {
       params: { searchTerm },
     });
   };
@@ -42,7 +42,7 @@ export const registerUserLogin = async (idUsuario, nombreCompleto, rol, token) =
       horaIngreso,
     };
   
-    return axios.post(`${base_URL}ingresoslogin`, payload, {
+    return api.post(`/ingresoslogin`, payload, {
       headers: {
         Authorization: `Bearer ${token}`, // Enviar el token para autenticación
       },
@@ -51,7 +51,7 @@ export const registerUserLogin = async (idUsuario, nombreCompleto, rol, token) =
 
   // Servicio para obtener todos los ingresos registrados
 export const getIngresos = async (token) => {
-    return axios.get(`${base_URL}ingresos`, {
+    return api.get(`/ingresos`, {
       headers: {
         Authorization: `Bearer ${token}`, // Token para autenticación
       },
@@ -60,7 +60,7 @@ export const getIngresos = async (token) => {
 
 
   export const getUsuariosConIngresos = async (token) => {
-    return axios.get(`${base_URL}usuarios-ingresos`, {
+    return api.get(`/usuarios-ingresos`, {
       headers: {
         Authorization: `Bearer ${token}`, // Enviar token para autenticación
       },
@@ -70,7 +70,7 @@ export const getIngresos = async (token) => {
   // Servicio para obtener ingresos por rango de fechas
 export const obtenerIngresosPorRango = async ({ startDate, endDate }) => {
     try {
-        const response = await axios.post(`${base_URL}ingresos/rango`, { startDate, endDate });
+        const response = await api.post(`/ingresos/rango`, { startDate, endDate });
         return response.data;
     } catch (error) {
         console.error("Error al obtener ingresos por rango:", error);
@@ -81,7 +81,7 @@ export const obtenerIngresosPorRango = async ({ startDate, endDate }) => {
 // Servicio para obtener la cantidad de usuarios con ingresos
 export const getCantidadUsuariosConIngresos = async () => {
     try {
-      const response = await axios.get(`${base_URL}cantidad-usuarios-ingresos`);
+      const response = await api.get(`/cantidad-usuarios-ingresos`);
       return response.data; // Devuelve { cantidad: X }
     } catch (error) {
       console.error('Error al obtener la cantidad de usuarios con ingresos:', error);
@@ -92,7 +92,7 @@ export const getCantidadUsuariosConIngresos = async () => {
   // Servicio para listar usuarios inactivos
 export const listarUsuariosInactivos = async () => {
     try {
-      const response = await axios.get(`${base_URL}usuarios/inactivos`);
+      const response = await api.get(`/usuarios/inactivos`);
       return response.data;
     } catch (error) {
       console.error('Error al listar usuarios inactivos:', error);
@@ -103,10 +103,11 @@ export const listarUsuariosInactivos = async () => {
   // Servicio para activar un usuario (cambiar estado a true)
   export const activarUsuario = async (id, rol) => {
     try {
-      const response = await axios.put(`${base_URL}usuarios/activar`, { id, rol });
+      const response = await api.put(`/usuarios/activar`, { id, rol });
       return response.data;
     } catch (error) {
       console.error('Error al activar el usuario:', error);
       throw error; // Lanza el error para manejarlo en el frontend
     }
   };
+

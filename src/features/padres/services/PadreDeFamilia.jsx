@@ -1,32 +1,30 @@
-import axios from 'axios';
-
-const base_URL = 'http://localhost:4000/';
+import { api } from "../../service/api";
 
 export const getPadre = () => {
-  return axios.get(`${base_URL}obtener/padresdefamilia`);
+  return api.get(`/obtener/padresdefamilia`);
 };
 
 export const getPadreById = (idPadre) => {
-  return axios.get(`${base_URL}obtener/padredefamilia/${idPadre}`);
+  return api.get(`/obtener/padredefamilia/${idPadre}`);
 };
 
 export const getPadreConEstudiantes = (idPadre) => {
-  return axios.get(`${base_URL}padre/${idPadre}/estudiantes`);
+  return api.get(`/padre/${idPadre}/estudiantes`);
 };
 
 export const postPadre = (formData) => {
-  return axios.post(`${base_URL}crear/padredefamilia`, formData);
+  return api.post(`/crear/padredefamilia`, formData);
 };
 
 export const putPadre = (idpadre, formData) => {
-  return axios.put(`${base_URL}actualizar/padredefamilia/${idpadre}`, formData);
+  return api.put(`/actualizar/padredefamilia/${idpadre}`, formData);
 };
 
 export const deletePadre = (idpadre) => {
-  return axios.delete(`${base_URL}eliminar/padredefamilia/${idpadre}`);
+  return api.delete(`/eliminar/padredefamilia/${idpadre}`);
 };
 
 // Obtener todos los padres de familia
 export const getDatePadres = async () => {
-  return axios.get(`${base_URL}obtener/datos/padres`);
+  return api.get(`/obtener/datos/padres`);
 };

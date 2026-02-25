@@ -1,30 +1,44 @@
-import axios from 'axios';
+import { api } from "../../service/api";
 
-// Establece la URL base de tu backend
-const base_URL = 'http://localhost:4000/';
+const getLoginErrorMessage = (error) => {
+  const backendData = error?.response?.data;
 
-// Servicio de login
+  if (typeof backendData === "string" && backendData.trim()) {
+    return backendData;
+  }
+
+  if (backendData?.error) {
+    return backendData.error;
+  }
+
+  if (backendData?.message) {
+    return backendData.message;
+  }
+
+  if (error?.message === "Network Error") {
+    return "No se pudo conectar con el servidor.";
+  }
+
+  return "Error al iniciar sesion";
+};
+
 const login = async (email, contrasenia) => {
   try {
-    const response = await axios.post(`${base_URL}login`, {
+    const response = await api.post(`/login`, {
       email,
       contrasenia,
     });
 
-    // Si el login es exitoso, guardar el token en el localStorage
     if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem("token", response.data.token);
     }
 
     return response.data;
   } catch (error) {
-    throw error.response.data || 'Error al iniciar sesión';
+    throw new Error(getLoginErrorMessage(error));
   }
 };
 
 export default {
   login,
-  
 };
-
-

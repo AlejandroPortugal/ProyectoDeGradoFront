@@ -1,26 +1,26 @@
-import axios from 'axios';
+import { api } from "../../service/api";
 
-const base_URL = 'http://localhost:4000/';
+
 
 export const getProfesor = () => {
-    return axios.get(`${base_URL}obtener/profesores`);
+    return api.get(`/obtener/profesores`);
 };
 
 export const obtenerPanelDocente = (idProfesor) => {
-    return axios.get(`${base_URL}profesores/inicio/${idProfesor}`);
+    return api.get(`/profesores/inicio/${idProfesor}`);
 };
 
 export const getProfesorById = (idprofesor) => {
-    return axios.get(`${base_URL}profesor/${idprofesor}`); // Asegúrate de pasar el id
+    return api.get(`/profesor/${idprofesor}`); // Asegúrate de pasar el id
 };
 
 export const getProfesoresConHorarios = () => {
-    return axios.get(`${base_URL}obtener/profesoresHorarios`);
+    return api.get(`/obtener/profesoresHorarios`);
   };
 
 // Actualiza el estado de la entrevista (completada / no realizada) validando profesor
 export const actualizarEstadoEntrevistaProfesor = (payload) => {
-    return axios.put(`${base_URL}profesor/entrevista/estado`, payload);
+    return api.put(`/profesor/entrevista/estado`, payload);
 };
   
 
@@ -60,7 +60,7 @@ export const postProfesor = async (formData) => {
         };
         
         console.log('Enviando datos al servidor:', JSON.stringify(profesorData, null, 2));
-        const response = await axios.post(`${base_URL}crear/profesor`, profesorData);
+        const response = await api.post(`/crear/profesor`, profesorData);
         return response;
     } catch (error) {
         console.error('Error en postProfesor:', error);
@@ -78,20 +78,20 @@ export const postProfesor = async (formData) => {
 };
 
 export const putProfesor = (idprofesor, formData) => {
-    return axios.put(`${base_URL}actualizar/profesor/${idprofesor}`, formData); // Asegúrate de pasar el id
+    return api.put(`/actualizar/profesor/${idprofesor}`, formData); // Asegúrate de pasar el id
 };
 
 export const deleteProfesor = (idprofesor) => {
-    return axios.delete(`${base_URL}eliminar/profesor/${idprofesor}`); // Asegúrate de pasar el id
+    return api.delete(`/eliminar/profesor/${idprofesor}`); // Asegúrate de pasar el id
 };
 
 export const getCountTeachers = async () => {
     try {
-        const response = await fetch(`${base_URL}obtener/cantidad/profesores`); // Cambia a tu URL
-        const dataTeacher = await response.json();
-        return parseInt(dataTeacher.total, 10); // Convierte el total a número
+        const response = await api.get(`/obtener/cantidad/profesores`);
+        return parseInt(response.data.total, 10); // Convierte el total a número
     } catch (error) {
         console.error('Error fetching user count:', error);
         throw error; // Lanza el error para manejarlo en el componente
     }
 };
+

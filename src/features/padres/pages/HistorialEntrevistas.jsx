@@ -54,7 +54,9 @@ const HistorialEntrevistas = () => {
                         ? response.data
                         : [];
                 setCitas(data);
-                setFilteredCitas(applyFilters(data, filters));
+                setFilteredCitas(
+                    applyFilters(filterCitasAgendaCerrada(data), filters)
+                );
                 setError(null);
                 setLoading(false);
             } catch (err) {
@@ -85,6 +87,127 @@ const HistorialEntrevistas = () => {
         fetchMaterias();
     }, []);
 
+    const normalizeText = (value) =>
+        (value || "")
+            .toString()
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, " ");
+
+    const normalizeEstado = (estado) => normalizeText(estado);
+
+    const parseBooleanFlag = (value) => {
+        if (typeof value === "boolean") return value;
+        if (typeof value === "number") {
+            if (value === 1) return true;
+            if (value === 0) return false;
+        }
+        const normalized = normalizeText(value);
+        if (!normalized) return null;
+        if (
+            [
+                "1",
+                "true",
+                "si",
+                "yes",
+                "cerrada",
+                "cerrado",
+                "completa",
+                "completo",
+                "finalizada",
+                "finalizado",
+                "llena",
+                "lleno",
+                "closed",
+            ].includes(normalized)
+        ) {
+            return true;
+        }
+        if (
+            [
+                "0",
+                "false",
+                "no",
+                "abierta",
+                "abierto",
+                "activa",
+                "activo",
+                "pendiente",
+                "open",
+            ].includes(normalized)
+        ) {
+            return false;
+        }
+        return null;
+    };
+
+    const getHoraInicioExacta = (cita) =>
+        cita?.horainicioentrevista ??
+        cita?.hora_inicio_entrevista ??
+        cita?.horaInicioEntrevista ??
+        cita?.horainicio_entrevista ??
+        "";
+
+    const getHoraFinExacta = (cita) =>
+        cita?.horafinentrevista ??
+        cita?.hora_fin_entrevista ??
+        cita?.horaFinEntrevista ??
+        cita?.horafin_entrevista ??
+        "";
+
+    const getHoraInicioCita = (cita) =>
+        getHoraInicioExacta(cita) ||
+        cita?.horainicio ||
+        cita?.hora_inicio ||
+        "";
+
+    const getHoraFinCita = (cita) =>
+        getHoraFinExacta(cita) ||
+        cita?.horafin ||
+        cita?.hora_fin ||
+        "";
+
+    const hasHorarioExactoEntrevista = (cita) =>
+        Boolean(getHoraInicioExacta(cita) || getHoraFinExacta(cita));
+
+    const getAgendaCerradaFlag = (cita) => {
+        const possibleFields = [
+            cita?.agenda_cerrada,
+            cita?.agendaCerrada,
+            cita?.agendacerrada,
+            cita?.agenda_estado,
+            cita?.agendaEstado,
+            cita?.estado_agenda,
+            cita?.estadoAgenda,
+            cita?.estadoagenda,
+        ];
+        for (const fieldValue of possibleFields) {
+            const parsed = parseBooleanFlag(fieldValue);
+            if (parsed !== null) return parsed;
+        }
+        return null;
+    };
+
+    const isAgendaCerrada = (cita) => {
+        const byFlag = getAgendaCerradaFlag(cita);
+        if (byFlag !== null) return byFlag;
+
+        const estadoNormalizado = normalizeEstado(cita?.estado);
+        if (estadoNormalizado && estadoNormalizado !== "pendiente") {
+            return true;
+        }
+
+        return hasHorarioExactoEntrevista(cita);
+    };
+
+    const filterCitasAgendaCerrada = (items) =>
+        (Array.isArray(items) ? items : []).filter((cita) => isAgendaCerrada(cita));
+
+    const citasAgendaCerrada = useMemo(
+        () => filterCitasAgendaCerrada(citas),
+        [citas]
+    );
+
     const materiaOptions = useMemo(() => {
         const map = new Map();
         const addMateria = (value) => {
@@ -97,21 +220,12 @@ const HistorialEntrevistas = () => {
         materias.forEach((mat) =>
             addMateria(mat?.nombre || mat?.nombremateria || mat?.materia)
         );
-        citas.forEach((cita) => addMateria(cita?.materia));
+        citasAgendaCerrada.forEach((cita) => addMateria(cita?.materia));
 
         return Array.from(map.values()).sort((a, b) =>
             a.localeCompare(b, "es", { sensitivity: "base" })
         );
-    }, [citas, materias]);
-
-    const normalizeText = (value) =>
-        (value || "")
-            .toString()
-            .trim()
-            .toLowerCase()
-            .replace(/\s+/g, " ");
-
-    const normalizeEstado = (estado) => normalizeText(estado);
+    }, [citasAgendaCerrada, materias]);
 
     const estadoOptions = useMemo(() => {
         const map = new Map();
@@ -122,12 +236,12 @@ const HistorialEntrevistas = () => {
             if (!map.has(key)) map.set(key, name);
         };
 
-        citas.forEach((cita) => addEstado(cita?.estado));
+        citasAgendaCerrada.forEach((cita) => addEstado(cita?.estado));
 
         return Array.from(map.values()).sort((a, b) =>
             a.localeCompare(b, "es", { sensitivity: "base" })
         );
-    }, [citas]);
+    }, [citasAgendaCerrada]);
 
     const parseFechaValue = (fecha) => {
         if (!fecha) return 0;
@@ -166,7 +280,7 @@ const HistorialEntrevistas = () => {
             }
             const dateDiff = parseFechaValue(b?.fecha) - parseFechaValue(a?.fecha);
             if (dateDiff !== 0) return dateDiff;
-            return parseHoraValue(b?.horainicio) - parseHoraValue(a?.horainicio);
+            return parseHoraValue(getHoraInicioCita(b)) - parseHoraValue(getHoraInicioCita(a));
         });
     };
 
@@ -203,7 +317,7 @@ const HistorialEntrevistas = () => {
         const updatedFilters = { ...filters, [name]: value };
         setFilters(updatedFilters);
         setPage(0);
-        setFilteredCitas(applyFilters(citas, updatedFilters));
+        setFilteredCitas(applyFilters(citasAgendaCerrada, updatedFilters));
     };
 
     const formatFechaDisplay = (fecha) => {
@@ -241,6 +355,9 @@ const HistorialEntrevistas = () => {
 
         exportActas(acta, estudiante);
     };
+
+    const hayCitasPendientesDeCierre =
+        citas.length > 0 && citasAgendaCerrada.length === 0;
 
     return (
         <div className="historial-container">
@@ -312,10 +429,12 @@ const HistorialEntrevistas = () => {
                                             cita.acta_fechadecreacion ||
                                             cita.acta_descripcion
                                         );
+                                        const horaInicio = getHoraInicioCita(cita);
+                                        const horaFin = getHoraFinCita(cita);
                                         const horaLabel =
-                                            cita.horainicio && cita.horafin
-                                                ? `${cita.horainicio} - ${cita.horafin}`
-                                                : cita.horainicio || cita.horafin || "No especificada";
+                                            horaInicio && horaFin
+                                                ? `${horaInicio} - ${horaFin}`
+                                                : horaInicio || horaFin || "No especificada";
 
                                         return (
                                             <article className="historial-card" key={cita.id || index}>
@@ -377,7 +496,9 @@ const HistorialEntrevistas = () => {
                         </>
                     ) : (
                         <p className="no-citas">
-                            No se encontraron entrevistas con los filtros seleccionados.
+                            {hayCitasPendientesDeCierre
+                                ? "Aun no hay citas visibles. Se mostraran cuando la agenda del profesor este cerrada."
+                                : "No se encontraron entrevistas con los filtros seleccionados."}
                         </p>
                     )}
                 </Paper>

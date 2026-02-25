@@ -1,9 +1,9 @@
-import axios from 'axios'
+import { api } from "../../service/api"
 
-const base_URL = 'http://localhost:4000/'
+
 
 export const getAdministrador = () => {
-    return axios.get(`${base_URL}obtener/administradores`);
+    return api.get(`/obtener/administradores`);
 };
 
 export const getAdministradorById = (id) => {
@@ -11,11 +11,11 @@ export const getAdministradorById = (id) => {
         console.error("El ID del administrador es indefinido.");
         return;
     }
-    return axios.get(`${base_URL}obtener/administrador/${id}`);
+    return api.get(`/obtener/administrador/${id}`);
 };
 
 export const postAdministrador = (formData) => {
-    return axios.post(`${base_URL}crear/administrador`, formData);
+    return api.post(`/crear/administrador`, formData);
 };
 
 export const putAdministrador = (id, formData) => {
@@ -23,7 +23,7 @@ export const putAdministrador = (id, formData) => {
         console.error("El ID del administrador es indefinido para actualizar.");
         return;
     }
-    return axios.put(`${base_URL}actualizar/administrador/${id}`, formData);
+    return api.put(`/actualizar/administrador/${id}`, formData);
 };
 
 export const deleteAdministrador = (id) => {
@@ -31,5 +31,5 @@ export const deleteAdministrador = (id) => {
         console.error("El ID del administrador es indefinido para eliminar.");
         return;
     }
-    return axios.delete(`${base_URL}eliminar/administrador/${id}`);
+    return api.delete(`/eliminar/administrador/${id}`);
 };
