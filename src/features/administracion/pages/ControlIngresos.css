@@ -197,12 +197,17 @@
 
 .control-ingresos-table-header {
   background-color: #006414;
-  color: #ffffff;
+  color: #ffffff !important;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   padding: 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.control-ingresos-table th.control-ingresos-table-header,
+.control-ingresos-table .MuiTableCell-head.control-ingresos-table-header {
+  color: #ffffff !important;
 }
 
 .control-ingresos-table-cell {

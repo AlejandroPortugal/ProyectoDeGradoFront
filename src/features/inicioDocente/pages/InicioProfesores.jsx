@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./InicioProfesores.css";
 import directorImage from "../../../recursos/image/Directora.jpg";
 import { obtenerPanelDocente } from "../../profesores/services/profesor.service.jsx";
+import { getSessionUser } from "../../../utils/session.js";
 
 const InicioProfesores = () => {
   const navigate = useNavigate();
@@ -23,21 +24,7 @@ const InicioProfesores = () => {
       setLoading(true);
       setError(null);
 
-      let storedUser = null;
-      try {
-        storedUser = localStorage.getItem("user");
-      } catch (storageError) {
-        console.error("No se pudo acceder al localStorage:", storageError);
-      }
-
-      let parsedUser = null;
-      if (storedUser) {
-        try {
-          parsedUser = JSON.parse(storedUser);
-        } catch (parseError) {
-          console.error("No se pudo parsear el usuario almacenado:", parseError);
-        }
-      }
+      const parsedUser = getSessionUser();
 
       const resolvedIdDocente =
         locationIdDocente ??

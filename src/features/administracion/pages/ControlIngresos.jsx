@@ -27,14 +27,22 @@ const ControlIngresos = () => {
     fetchUsuariosConIngresos();
   }, [token]);
 
+  const orderedData = useMemo(() => {
+    return [...data].sort((a, b) => {
+      return (Number(b.id) || 0) - (Number(a.id) || 0);
+    });
+  }, [data]);
+
   const filteredData = useMemo(() => {
+    const source = orderedData;
+
     if (!searchValue.trim()) {
-      return data;
+      return source;
     }
 
     const value = searchValue.toLowerCase();
 
-    return data.filter((item) => {
+    return source.filter((item) => {
       const nombreCompleto = (item.nombrecompleto || '').toLowerCase();
       const fechaIngreso = item.fechaingreso?.split('T')[0] || '';
       const rol = (item.rol || '').toLowerCase();
@@ -47,7 +55,7 @@ const ControlIngresos = () => {
         horaIngreso.includes(value)
       );
     });
-  }, [data, searchValue]);
+  }, [orderedData, searchValue]);
 
   const handleChangePage = (_event, newPage) => {
     setPage(newPage);
@@ -77,12 +85,12 @@ const ControlIngresos = () => {
 
         const hora = item.horaingreso || '00:00:00';
         return {
-          sortKey: `${fecha}T${hora}`,
+          sortKey: Number(item.id) || 0,
           text: `${fecha} ${item.horaingreso || ''}`.trim(),
         };
       })
       .filter(Boolean)
-      .sort((a, b) => (a.sortKey > b.sortKey ? 1 : -1))
+      .sort((a, b) => a.sortKey - b.sortKey)
       .pop()?.text || 'Sin registro';
 
   const filteredCount = filteredData.length;
@@ -149,6 +157,7 @@ const ControlIngresos = () => {
             <Table className="control-ingresos-table">
               <TableHead>
                 <TableRow>
+                  <TableCell className="control-ingresos-table-header">Nro</TableCell>
                   <TableCell className="control-ingresos-table-header">Nombre Completo</TableCell>
                   <TableCell className="control-ingresos-table-header">Rol</TableCell>
                   <TableCell className="control-ingresos-table-header">Fecha de Ingreso</TableCell>
@@ -160,6 +169,9 @@ const ControlIngresos = () => {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((item, index) => (
                     <TableRow key={`${item.nombrecompleto}-${item.fechaingreso}-${index}`}>
+                      <TableCell className="control-ingresos-table-cell">
+                        {page * rowsPerPage + index + 1}
+                      </TableCell>
                       <TableCell className="control-ingresos-table-cell">
                         {item.nombrecompleto || 'Sin registro'}
                       </TableCell>

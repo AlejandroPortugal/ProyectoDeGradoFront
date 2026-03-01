@@ -14,6 +14,7 @@ import { getMateria } from '../../materias/services/materia.service.jsx';
 import Toast from '../../../components/Toast.jsx';
 import exportActas from '../utils/exportActas.jsx';
 import TablaPaginada from '../../../components/TablaPaginada.jsx';
+import { getSessionUser } from '../../../utils/session.js';
 
 const ListaActas = () => {
   const location = useLocation();
@@ -33,11 +34,9 @@ const ListaActas = () => {
   const [actaToDelete, setActaToDelete] = useState(null);
 
   const getStoredUserId = () => {
-    if (typeof window === 'undefined') return null;
     try {
-      const stored = localStorage.getItem('user');
-      if (!stored) return null;
-      const user = JSON.parse(stored);
+      const user = getSessionUser();
+      if (!user) return null;
       return (
         user.id ??
         user.idusuario ??
@@ -49,7 +48,7 @@ const ListaActas = () => {
         null
       );
     } catch (error) {
-      console.error('No se pudo leer el usuario local:', error);
+      console.error('No se pudo reconstruir la sesion del usuario:', error);
       return null;
     }
   };

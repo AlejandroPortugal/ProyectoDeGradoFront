@@ -26,6 +26,7 @@ import whatsappIcon from "../../../recursos/icons/WhatsApp.svg";
 import iconcheck from "../../../recursos/icons/check.svg";
 import icondelete from "../../../recursos/icons/delete.svg";
 import Toast from "../../../components/Toast.jsx";
+import { getSessionUser } from "../../../utils/session.js";
 
 const getLocalToday = () => {
   const offset = new Date().getTimezoneOffset() * 60000;
@@ -342,7 +343,9 @@ const getEntrevistaId = (ent) =>
 
 const getStoredUser = () => {
   if (typeof window === "undefined") return null;
-  return normalizeUserInfo(safeParseJSON(localStorage.getItem("user")));
+  const persistedUser = normalizeUserInfo(safeParseJSON(localStorage.getItem("user")));
+  if (persistedUser) return persistedUser;
+  return normalizeUserInfo(getSessionUser());
 };
 
 const getStudentName = (ent) =>
@@ -1010,16 +1013,28 @@ const ListEntrevistas = () => {
 
   const buildWhatsappMessage = useCallback(
     (entrevista) => {
-      const docenteNombre = usuarioInfo?.nombres
-        ? `${usuarioInfo.nombres} ${usuarioInfo.apellidopaterno || ""} ${usuarioInfo.apellidomaterno || ""}`
-            .replace(/\s+/g, " ")
-            .trim()
-        : "el docente a cargo";
+      const docenteNombre = (
+        usuarioInfo?.nombreCompleto ||
+        (usuarioInfo?.nombres
+          ? `${usuarioInfo.nombres} ${usuarioInfo.apellidopaterno || ""} ${usuarioInfo.apellidomaterno || ""}`
+          : "") ||
+        location.state?.nombreCompleto ||
+        (location.state?.nombres
+          ? `${location.state.nombres} ${location.state?.apellidopaterno || ""} ${location.state?.apellidomaterno || ""}`
+          : "")
+      )
+        .replace(/\s+/g, " ")
+        .trim();
 
       const nombrePadre = entrevista.nombre_completo || "familia";
       const motivoTexto = entrevista.motivo || "por confirmar";
       const horaInicio = entrevista.horainicio || "la hora programada";
       const horaFin = entrevista.horafin || "la hora estimada";
+      const estudianteTexto =
+        entrevista.nombre_estudiante ||
+        entrevista.estudiante ||
+        entrevista.nombreEstudiante ||
+        "su hijo(a)";
       const fechaTexto = formatFechaLarga(entrevista.fecha || fechaFiltro);
       const materiaTexto =
         entrevista.nombremateria ||
@@ -1030,10 +1045,37 @@ const ListEntrevistas = () => {
         usuarioInfo?.materia ||
         "la materia asignada";
       const saludo = obtenerSaludoSegunHora(entrevista.fecha || fechaFiltro, entrevista.horainicio);
+      const generoPadre = (
+        entrevista.genero ||
+        entrevista.sexo ||
+        entrevista.tratamiento ||
+        ""
+      )
+        .toString()
+        .trim()
+        .toLowerCase();
+      const tratamientoPadre = ["f", "femenino", "mujer", "sra", "senora"].includes(generoPadre)
+        ? "Sra."
+        : ["m", "masculino", "hombre", "sr", "senor"].includes(generoPadre)
+          ? "Sr."
+          : "Sr(a).";
+      const remitenteTexto = docenteNombre
+        ? `Le escribe el docente ${docenteNombre} a cargo de la materia ${materiaTexto} del colegio Bancario (IDEB).`
+        : `Le escribe el docente encargado de la materia ${materiaTexto} del colegio Bancario (IDEB).`;
 
-      return `${saludo} ${nombrePadre}, le escribe ${docenteNombre} profesor(a) de la materia ${materiaTexto} del colegio Bancario (IDEB). A traves de este mensaje se lo convoca a entrevista el dia ${fechaTexto} a las ${horaInicio} por un motivo ${motivoTexto}. Aguardamos tu confirmacion, que tengas buen dia.\n\nUNIDAD EDUCATIVA INSTITUTO DE EDUCACION BANCARIA`;
+      return [
+        `${saludo}, ${tratamientoPadre} ${nombrePadre}.`,
+        `${remitenteTexto} A traves de este mensaje, se lo convoca a una entrevista con el siguiente detalle:`,
+        "",
+        `Estudiante por el que se lo convoca: ${estudianteTexto}`,
+        `Dia de entrevista: ${fechaTexto} a las ${horaInicio}`,
+        `Motivo por el que se lo convoca: ${motivoTexto}.`,
+        "",
+        "Aguardamos su confirmacion. Que tenga un buen dia.",
+        "UNIDAD EDUCATIVA INSTITUTO DE EDUCACION BANCARIA",
+      ].join("\n");
     },
-    [fechaFiltro, materiaNombre, usuarioInfo]
+    [fechaFiltro, location.state, materiaNombre, usuarioInfo]
   );
 
   const getWhatsappLink = useCallback(

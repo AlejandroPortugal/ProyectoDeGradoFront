@@ -30,16 +30,10 @@ export const filterUsuarios = (searchTerm) => {
 
   // Servicio para registrar el ingreso del usuario logueado
 export const registerUserLogin = async (idUsuario, nombreCompleto, rol, token) => {
-    const currentDateTime = new Date();
-    const fechaIngreso = currentDateTime.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-    const horaIngreso = currentDateTime.toTimeString().split(' ')[0]; // Formato HH:MM:SS
-  
     const payload = {
       idUsuario,
       nombreCompleto,
       rol,
-      fechaIngreso,
-      horaIngreso,
     };
   
     return api.post(`/ingresoslogin`, payload, {
@@ -110,4 +104,5 @@ export const listarUsuariosInactivos = async () => {
       throw error; // Lanza el error para manejarlo en el frontend
     }
   };
+
 

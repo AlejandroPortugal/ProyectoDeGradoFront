@@ -10,6 +10,7 @@ import './CitarPadres.css';
 import Header from '../../../components/Header.jsx';
 import Toast from '../../../components/Toast.jsx';
 import FullScreenLoader from '../../../components/ProgresoCircular.jsx';
+import { getSessionUser } from '../../../utils/session.js';
 
 const getLocalISODate = (offsetDays = 0) => {
   const now = new Date();
@@ -219,12 +220,9 @@ const resolveEntrevistaPsicologoId = (ent) =>
   resolveNumericId(ent?.idpsicologo, ent?.idPsicologo, ent?.id_psicologo, ent?.psicologo_id);
 
 const getStoredUser = () => {
-  if (typeof window === 'undefined') return null;
-  const raw = localStorage.getItem('user');
-  if (!raw) return null;
-
   try {
-    const parsed = JSON.parse(raw);
+    const parsed = getSessionUser();
+    if (!parsed) return null;
     const role = parsed.role || parsed.rol || '';
     const roleNormalized = normalizeRole(role);
     const idBase = resolveNumericId(parsed.id, parsed.idusuario, parsed.idUsuario, parsed.id_usuario);
@@ -262,7 +260,7 @@ const getStoredUser = () => {
       horarioNormalizado: normalizeUserHorario(parsed),
     };
   } catch (error) {
-    console.error('No se pudo leer la session del usuario:', error);
+    console.error('No se pudo reconstruir la sesion del usuario:', error);
     return null;
   }
 };

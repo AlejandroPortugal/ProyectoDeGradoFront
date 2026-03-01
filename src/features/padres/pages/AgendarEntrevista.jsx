@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import es from 'date-fns/locale/es';
@@ -15,6 +15,7 @@ import MenuPadres from '../components/MenuPadres.jsx';
 import Footes from '../components/Footes.jsx';
 import Toast from '../../../components/Toast.jsx';
 import FullScreenLoader from '../../../components/ProgresoCircular.jsx'; // Importar el componente ProgresoCircular
+import { getSessionUser } from '../../../utils/session.js';
 
 registerLocale('es', es);
 
@@ -22,7 +23,7 @@ const AgendarEntrevista = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { idProfesor, idPsicologo, nombre, materia, dia, horainicio } = location.state || {};
+  const { idProfesor, idPsicologo, idHorario, nombre, materia, dia, horainicio } = location.state || {};
   const [motivos, setMotivos] = useState([]);
   const [idMotivo, setIdMotivo] = useState('');
   const [fecha, setFecha] = useState(null);
@@ -38,13 +39,7 @@ const AgendarEntrevista = () => {
   const [fechasDisponiblesRange, setFechasDisponiblesRange] = useState(null);
 
   const getStoredUser = () => {
-    if (typeof window === 'undefined') return null;
-    try {
-      return JSON.parse(localStorage.getItem('user') || 'null');
-    } catch (error) {
-      console.error('No se pudo leer el usuario local:', error);
-      return null;
-    }
+    return getSessionUser();
   };
 
   const getStoredPadreId = () => {
@@ -99,7 +94,7 @@ const AgendarEntrevista = () => {
           setSelectedStudentId(String(idFromUser));
         }
       } catch (error) {
-        console.error('No se pudieron cargar los estudiantes para la selección:', error);
+        console.error('No se pudieron cargar los estudiantes para la selecci�n:', error);
       }
     };
 
@@ -146,6 +141,7 @@ const AgendarEntrevista = () => {
         const params = {
           dia,
           dias: 120,
+          idhorario: idHorario || undefined,
         };
         if (idProfesor) params.idProfesor = idProfesor;
         if (idPsicologo) params.idPsicologo = idPsicologo;
@@ -173,44 +169,26 @@ const AgendarEntrevista = () => {
     };
 
     loadFechasDisponibles();
-  }, [dia, idProfesor, idPsicologo, idMotivo]);
+  }, [dia, idHorario, idProfesor, idPsicologo, idMotivo]);
 
   const normalizeDia = (value) =>
     String(value || '')
       .trim()
       .toLowerCase()
-      .replace(/[áàäâ]/g, 'a')
-      .replace(/[éèëê]/g, 'e')
-      .replace(/[íìïî]/g, 'i')
-      .replace(/[óòöô]/g, 'o')
-      .replace(/[úùüû]/g, 'u')
-      .replace(/ñ/g, 'n')
-      .replace(/Ã¡/g, 'a')
-      .replace(/Ã©/g, 'e')
-      .replace(/Ã­/g, 'i')
-      .replace(/Ã³/g, 'o')
-      .replace(/Ãº/g, 'u')
-      .replace(/Ã±/g, 'n');
+      .replace(/[����]/g, 'a')
+      .replace(/[����]/g, 'e')
+      .replace(/[����]/g, 'i')
+      .replace(/[����]/g, 'o')
+      .replace(/[����]/g, 'u')
+      .replace(/�/g, 'n')
+      .replace(/á/g, 'a')
+      .replace(/é/g, 'e')
+      .replace(/í/g, 'i')
+      .replace(/ó/g, 'o')
+      .replace(/ú/g, 'u')
+      .replace(/ñ/g, 'n');
 
-  const formatLocalDate = (value) => {
-    if (!value) return '';
-    const dateValue = value instanceof Date ? value : new Date(value);
-    if (Number.isNaN(dateValue.getTime())) return '';
-    const year = dateValue.getFullYear();
-    const month = String(dateValue.getMonth() + 1).padStart(2, '0');
-    const day = String(dateValue.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
-  const isDayEnabled = (date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (date < today) {
-      return false;
-    }
-
-    const dayOfWeek = date.getDay();
-
+  const expectedDayIndex = useMemo(() => {
     const daysMap = {
       domingo: 0,
       lunes: 1,
@@ -222,23 +200,83 @@ const AgendarEntrevista = () => {
     };
 
     const normalizedDia = normalizeDia(dia);
-    const diaIndex = daysMap[normalizedDia];
-    if (Number.isInteger(diaIndex) && dayOfWeek !== diaIndex) {
+    return Number.isInteger(daysMap[normalizedDia]) ? daysMap[normalizedDia] : null;
+  }, [dia]);
+
+  const formatLocalDate = (value) => {
+    if (!value) return '';
+    const dateValue = value instanceof Date ? value : new Date(value);
+    if (Number.isNaN(dateValue.getTime())) return '';
+    const year = dateValue.getFullYear();
+    const month = String(dateValue.getMonth() + 1).padStart(2, '0');
+    const day = String(dateValue.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const fechasDisponiblesCompatibles = useMemo(() => {
+    if (!fechasDisponibles?.size) return null;
+
+    const compatibles = Array.from(fechasDisponibles).filter((fechaIso) => {
+      if (expectedDayIndex === null) return true;
+      const parsed = new Date(`${fechaIso}T00:00:00`);
+      if (Number.isNaN(parsed.getTime())) return false;
+      return parsed.getDay() === expectedDayIndex;
+    });
+
+    if (!compatibles.length) {
+      return null;
+    }
+
+    return new Set(compatibles);
+  }, [expectedDayIndex, fechasDisponibles]);
+
+  const firstAvailableDate = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (fechasDisponiblesCompatibles?.size) {
+      const primeraFecha = Array.from(fechasDisponiblesCompatibles).sort()[0];
+      const parsed = new Date(`${primeraFecha}T00:00:00`);
+      if (!Number.isNaN(parsed.getTime())) {
+        return parsed < today ? today : parsed;
+      }
+    }
+
+    if (expectedDayIndex !== null) {
+      for (let offset = 0; offset <= 14; offset += 1) {
+        const candidate = new Date(today);
+        candidate.setDate(today.getDate() + offset);
+        if (candidate.getDay() === expectedDayIndex) {
+          return candidate;
+        }
+      }
+    }
+
+    if (!fechasDisponiblesRange?.min) {
+      return today;
+    }
+
+    const parsed = new Date(`${fechasDisponiblesRange.min}T00:00:00`);
+    if (Number.isNaN(parsed.getTime())) {
+      return today;
+    }
+
+    return parsed < today ? today : parsed;
+  }, [expectedDayIndex, fechasDisponiblesCompatibles, fechasDisponiblesRange]);
+
+  const isDayEnabled = (date) => {
+    if (date < firstAvailableDate) {
+      return false;
+    }
+
+    if (expectedDayIndex !== null && date.getDay() !== expectedDayIndex) {
       return false;
     }
 
     const fechaKey = formatLocalDate(date);
-    if (fechasOcupadas.has(fechaKey)) {
-      return false;
-    }
 
-    const dentroDeRango =
-      fechasDisponiblesRange &&
-      fechaKey >= fechasDisponiblesRange.min &&
-      fechaKey <= fechasDisponiblesRange.max;
-
-    if (fechasDisponibles && dentroDeRango && !fechasDisponibles.has(fechaKey)) {
-      return false;
+    if (fechasDisponiblesCompatibles?.size) {
+      return fechasDisponiblesCompatibles.has(fechaKey);
     }
 
     return true;
@@ -257,11 +295,14 @@ const AgendarEntrevista = () => {
     }
 
     const fechaKey = formatLocalDate(fecha);
-    const dentroDeRango =
-      fechasDisponiblesRange &&
-      fechaKey >= fechasDisponiblesRange.min &&
-      fechaKey <= fechasDisponiblesRange.max;
-    if (fechasOcupadas.has(fechaKey) || (fechasDisponibles && dentroDeRango && !fechasDisponibles.has(fechaKey))) {
+    if (expectedDayIndex !== null && fecha.getDay() !== expectedDayIndex) {
+      setToastMessage(`Solo puede agendar entrevistas los dias ${dia}.`);
+      setToastType('error');
+      setShowToast(true);
+      return;
+    }
+
+    if (fechasDisponiblesCompatibles?.size && !fechasDisponiblesCompatibles.has(fechaKey)) {
       setToastMessage('La fecha seleccionada no esta disponible para agendar.');
       setToastType('error');
       setShowToast(true);
@@ -424,7 +465,8 @@ const AgendarEntrevista = () => {
                   selected={fecha}
                   onChange={(date) => setFecha(date)}
                   filterDate={isDayEnabled}
-                  minDate={new Date()}
+                  minDate={firstAvailableDate}
+                  openToDate={firstAvailableDate}
                   locale="es"
                   inline
                 />
@@ -478,6 +520,13 @@ const AgendarEntrevista = () => {
 };
 
 export default AgendarEntrevista;
+
+
+
+
+
+
+
 
 
 

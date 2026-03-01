@@ -56,11 +56,7 @@ function Login() {
       return;
     }
 
-    const idUsuario =
-      user.idUsuario ||
-      user.idusuario ||
-      user.id ||
-      actorId;
+    const idUsuario = actorId;
 
     const nombreCompleto = `${user.nombres || user.Nombres || ''} ${user.apellidopaterno || user.ApellidoPaterno || ''} ${user.apellidomaterno || user.ApellidoMaterno || ''}`
       .replace(/\s+/g, ' ')

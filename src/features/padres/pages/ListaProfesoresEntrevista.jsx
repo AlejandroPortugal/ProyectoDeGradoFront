@@ -31,6 +31,7 @@ const ListaProfesoresEntrevista = () => {
       state: {
         idProfesor: isPsicologo ? null : row.id, // Enviar idProfesor solo si no es psicólogo
         idPsicologo: isPsicologo ? row.id : null, // Enviar idPsicologo solo si es psicólogo
+        idHorario: row.idhorario ?? row.idHorario ?? null,
         nombre: row.nombre,
         materia: row.materia,
         dia: row.dia,
@@ -117,4 +118,5 @@ const ListaProfesoresEntrevista = () => {
 };
 
 export default ListaProfesoresEntrevista;
+
 

@@ -9,6 +9,7 @@ import { getProfesorById, putProfesor } from '../../profesores/services/profesor
 import { getPsicologoById, putPsicologo } from '../../psicologos/services/psicologo.service.jsx';
 import Toast from '../../../components/Toast.jsx';
 import eyeIcon from '../../../recursos/icons/Eye.svg';
+import { getSessionUser } from '../../../utils/session.js';
 
 
 
@@ -39,14 +40,13 @@ const Configuraciones = () => {
     });
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            const parsedUser = JSON.parse(storedUser);
+        const parsedUser = getSessionUser();
+        if (parsedUser) {
             setUserId(parsedUser.id);
             setUserRole(parsedUser.role);
             fetchUserData(parsedUser.id, parsedUser.role);
         } else {
-            console.error("No se encontraron datos en el localStorage");
+            console.error("No se pudo reconstruir la sesion desde el token");
         }
     }, []);
 

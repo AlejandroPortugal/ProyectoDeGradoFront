@@ -12,6 +12,7 @@ import imgEstudiantes from '../../../recursos/image/Estudiantes.png';
 import Toast from '../../../components/Toast.jsx';
 import jsPDF from 'jspdf';
 import logoIdeb from '../../../recursos/icons/logo.svg';
+import { getSessionUser } from '../../../utils/session.js';
 
 const safeParseJSON = (value) => {
   if (!value) return null;
@@ -63,28 +64,20 @@ function FormActas() {
   });
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        try {
-          const parsed = JSON.parse(storedUser);
-          const nombre =
-            `${parsed?.nombres || ''} ${parsed?.apellidopaterno || ''} ${parsed?.apellidomaterno || ''}`
-              .replace(/\s+/g, ' ')
-              .trim();
-          if (nombre) {
-            setProfesorNombre(nombre);
-          }
-        } catch (error) {
-          console.error('No se pudo obtener el usuario local:', error);
-        }
+    const parsed = getSessionUser();
+    if (parsed) {
+      const nombre =
+        `${parsed?.nombres || ''} ${parsed?.apellidopaterno || ''} ${parsed?.apellidomaterno || ''}`
+          .replace(/\s+/g, ' ')
+          .trim();
+      if (nombre) {
+        setProfesorNombre(nombre);
       }
     }
   }, []);
 
   const getStoredUser = useCallback(() => {
-    if (typeof window === 'undefined') return null;
-    return safeParseJSON(localStorage.getItem('user'));
+    return getSessionUser();
   }, []);
 
   const resolvePadreDesdeState = useCallback(() => {

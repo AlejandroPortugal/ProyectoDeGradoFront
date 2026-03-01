@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getSessionUser } from './utils/session.js';
 
 const AuthContext = createContext();
 
@@ -11,15 +12,15 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
-        const storedUser = localStorage.getItem('user');
 
-        if (storedToken && storedUser) {
-            const tokenExpiry = JSON.parse(atob(storedToken.split('.')[1])).exp * 1000;
+        if (storedToken) {
+            const sessionUser = getSessionUser(storedToken);
+            const tokenExpiry = (sessionUser?.exp || 0) * 1000;
             const now = new Date().getTime();
 
-            if (tokenExpiry > now) {
+            if (sessionUser && tokenExpiry > now) {
                 setToken(storedToken);
-                setUser(JSON.parse(storedUser));
+                setUser(sessionUser);
             } else {
                 logout();
             }
@@ -30,9 +31,9 @@ export const AuthProvider = ({ children }) => {
 
     const login = (token, userData) => {
         setToken(token);
-        setUser(userData);
+        setUser({ ...getSessionUser(token), ...userData });
         localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.removeItem('user');
     };
 
     const logout = () => {
