@@ -9,7 +9,11 @@ import LoadingScreen from '../../../components/LoadingScreen.jsx';
 import { getUsuarios, obtenerIngresosPorRango } from '../../users/services/users.service.jsx';
 import { getProfesor } from '../../profesores/services/profesor.service.jsx';
 import { getPsicologo } from '../../psicologos/services/psicologo.service.jsx';
-import { obtenerListaEntrevistaPorRango } from '../../entrevistas/services/teoriaDeColas.service.jsx';
+import {
+  obtenerComparativaTiemposPorRango,
+  obtenerListaEntrevistaPorRango,
+} from '../../entrevistas/services/teoriaDeColas.service.jsx';
+import { getMotivos } from '../../motivos/services/motivo.service.jsx';
 
 const getPublicBase = () => {
   if (typeof document === 'undefined') return '/';
@@ -20,10 +24,20 @@ const getPublicBase = () => {
 
 const ESCUDO_URL = `${getPublicBase()}Imgs/webp/Escudo%20.webp`;
 const TABLE_HEADER_GREEN = [20, 120, 60];
+const PRIORITY_OPTIONS = ['Alta', 'Media', 'Baja'];
 
 const Informe = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [priorityStartDate, setPriorityStartDate] = useState('');
+  const [priorityEndDate, setPriorityEndDate] = useState('');
+  const [selectedPrioridad, setSelectedPrioridad] = useState('');
+  const [motivoStartDate, setMotivoStartDate] = useState('');
+  const [motivoEndDate, setMotivoEndDate] = useState('');
+  const [selectedMotivo, setSelectedMotivo] = useState('');
+  const [comparativaStartDate, setComparativaStartDate] = useState('');
+  const [comparativaEndDate, setComparativaEndDate] = useState('');
+  const [motivos, setMotivos] = useState([]);
   const [stats, setStats] = useState({ usuarios: 0, profesores: 0, psicologos: 0 });
   const [statsLoading, setStatsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -52,6 +66,19 @@ const Informe = () => {
     };
 
     fetchStats();
+  }, []);
+
+  useEffect(() => {
+    const fetchMotivos = async () => {
+      try {
+        const response = await getMotivos();
+        setMotivos(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error('Error al cargar los motivos del informe:', error);
+      }
+    };
+
+    fetchMotivos();
   }, []);
 
   const loadImageAsPngDataUrl = (src) =>
@@ -132,6 +159,14 @@ const Informe = () => {
 
   const stopLoading = () => {
     setIsGenerating(false);
+  };
+
+  const getEntrevistasByRange = async (rangeStartDate, rangeEndDate) => {
+    const response = await obtenerListaEntrevistaPorRango({
+      startDate: rangeStartDate,
+      endDate: rangeEndDate,
+    });
+    return Array.isArray(response.data) ? response.data : [];
   };
 
   const downloadUsuariosPDF = async () => {
@@ -333,6 +368,164 @@ const Informe = () => {
     }
   };
 
+  const downloadPrioridadPDF = async () => {
+    if (!priorityStartDate || !priorityEndDate || !selectedPrioridad) {
+      alert('Selecciona prioridad y ambas fechas para generar el reporte.');
+      return;
+    }
+
+    try {
+      startLoading('Generando informe de entrevistas por prioridad...');
+      const entrevistas = await getEntrevistasByRange(priorityStartDate, priorityEndDate);
+      const entrevistasFiltradas = entrevistas.filter(
+        (entrevista) =>
+          String(entrevista.prioridad || '').trim().toLowerCase() ===
+          selectedPrioridad.toLowerCase()
+      );
+
+      const doc = new jsPDF();
+      const startY = await drawReportHeader(doc, {
+        title: 'Informe de Entrevistas por Prioridad',
+        description:
+          'Reporte de entrevistas registradas dentro del periodo seleccionado, filtradas por nivel de prioridad para control y seguimiento.',
+        dateRange: `${priorityStartDate} al ${priorityEndDate}`,
+      });
+
+      const tableColumn = ['Fecha', 'Padre de familia', 'Estudiante', 'Motivo', 'Prioridad', 'Estado'];
+      const tableRows = entrevistasFiltradas.map((entrevista) => [
+        entrevista.fecha || 'Sin registro',
+        [entrevista.nombres, entrevista.apellidopaterno, entrevista.apellidomaterno]
+          .filter(Boolean)
+          .join(' ') || 'Sin registro',
+        entrevista.estudiante || 'Sin registro',
+        entrevista.motivo || 'Sin registro',
+        entrevista.prioridad || 'Sin registro',
+        entrevista.estado_nombre || entrevista.accion || 'Sin registro',
+      ]);
+
+      autoTable(doc, {
+        head: [tableColumn],
+        body: tableRows.length > 0 ? tableRows : [['Sin registros', '', '', '', '', '']],
+        ...buildTableOptions(startY),
+      });
+
+      doc.save(
+        `entrevistas_prioridad_${selectedPrioridad.toLowerCase()}_${priorityStartDate}_a_${priorityEndDate}.pdf`
+      );
+    } catch (error) {
+      console.error('Error al generar el PDF por prioridad:', error);
+      alert('Hubo un error al generar el reporte por prioridad.');
+    } finally {
+      stopLoading();
+    }
+  };
+
+  const downloadMotivoPDF = async () => {
+    if (!motivoStartDate || !motivoEndDate || !selectedMotivo) {
+      alert('Selecciona motivo y ambas fechas para generar el reporte.');
+      return;
+    }
+
+    try {
+      startLoading('Generando informe de entrevistas por motivo...');
+      const entrevistas = await getEntrevistasByRange(motivoStartDate, motivoEndDate);
+      const entrevistasFiltradas = entrevistas.filter(
+        (entrevista) =>
+          String(entrevista.motivo || '').trim().toLowerCase() ===
+          selectedMotivo.toLowerCase()
+      );
+
+      const doc = new jsPDF();
+      const startY = await drawReportHeader(doc, {
+        title: 'Informe de Entrevistas por Motivo',
+        description:
+          'Reporte de entrevistas registradas dentro del periodo seleccionado, filtradas por motivo para apoyar la revision administrativa.',
+        dateRange: `${motivoStartDate} al ${motivoEndDate}`,
+      });
+
+      const tableColumn = ['Fecha', 'Padre de familia', 'Estudiante', 'Motivo', 'Prioridad', 'Estado'];
+      const tableRows = entrevistasFiltradas.map((entrevista) => [
+        entrevista.fecha || 'Sin registro',
+        [entrevista.nombres, entrevista.apellidopaterno, entrevista.apellidomaterno]
+          .filter(Boolean)
+          .join(' ') || 'Sin registro',
+        entrevista.estudiante || 'Sin registro',
+        entrevista.motivo || 'Sin registro',
+        entrevista.prioridad || 'Sin registro',
+        entrevista.estado_nombre || entrevista.accion || 'Sin registro',
+      ]);
+
+      autoTable(doc, {
+        head: [tableColumn],
+        body: tableRows.length > 0 ? tableRows : [['Sin registros', '', '', '', '', '']],
+        ...buildTableOptions(startY),
+      });
+
+      doc.save(
+        `entrevistas_motivo_${selectedMotivo.toLowerCase().replace(/\s+/g, '_')}_${motivoStartDate}_a_${motivoEndDate}.pdf`
+      );
+    } catch (error) {
+      console.error('Error al generar el PDF por motivo:', error);
+      alert('Hubo un error al generar el reporte por motivo.');
+    } finally {
+      stopLoading();
+    }
+  };
+
+  const downloadComparativaTiemposPDF = async () => {
+    if (!comparativaStartDate || !comparativaEndDate) {
+      alert('Por favor selecciona ambas fechas para generar el reporte comparativo.');
+      return;
+    }
+
+    try {
+      startLoading('Generando informe comparativo de tiempos...');
+      const response = await obtenerComparativaTiemposPorRango({
+        startDate: comparativaStartDate,
+        endDate: comparativaEndDate,
+      });
+      const comparativa = Array.isArray(response.data) ? response.data : [];
+
+      const doc = new jsPDF();
+      const startY = await drawReportHeader(doc, {
+        title: 'Informe Comparativo de Tiempos de Entrevistas',
+        description:
+          'Comparativa entre el tiempo estimado y el tiempo real de atencion por entrevista, incluyendo el motivo registrado.',
+        dateRange: `${comparativaStartDate} al ${comparativaEndDate}`,
+      });
+
+      const tableColumn = [
+        'Fecha',
+        'Estudiante',
+        'Motivo',
+        'Tiempo estimado',
+        'Tiempo real',
+        'Diferencia',
+      ];
+      const tableRows = comparativa.map((item) => [
+        item.fecha || 'Sin registro',
+        item.estudiante || 'Sin registro',
+        item.motivo || 'Sin registro',
+        item.tiempoEstimado || 'Sin registro',
+        item.tiempoReal || 'Sin registro',
+        item.diferencia || 'Sin registro',
+      ]);
+
+      autoTable(doc, {
+        head: [tableColumn],
+        body: tableRows.length > 0 ? tableRows : [['Sin registros', '', '', '', '', '']],
+        ...buildTableOptions(startY),
+      });
+
+      doc.save(`comparativa_tiempos_${comparativaStartDate}_a_${comparativaEndDate}.pdf`);
+    } catch (error) {
+      console.error('Error al generar el PDF comparativo de tiempos:', error);
+      alert('Hubo un error al generar el informe comparativo de tiempos.');
+    } finally {
+      stopLoading();
+    }
+  };
+
   const selectedRangeLabel = startDate && endDate ? `${startDate} al ${endDate}` : 'Sin rango activo';
 
   return (
@@ -348,7 +541,7 @@ const Informe = () => {
           </p>
           <div className="informe-hero__meta">
             <span className="informe-hero__chip">
-              Reportes disponibles: <strong>5</strong>
+              Reportes disponibles: <strong>8</strong>
             </span>
             <span className="informe-hero__chip">
               Rango seleccionado: <strong>{selectedRangeLabel}</strong>
@@ -403,7 +596,7 @@ const Informe = () => {
             </button>
           </div>
 
-          <div className="informe-card">
+          <div className="informe-card informe-card--range">
             <img src={imgActas} alt="Reporte de Citas" className="informe-image" />
             <h3 className="informe-titulo">Reporte de Padres Citados por Rango de Fechas</h3>
 
@@ -429,7 +622,7 @@ const Informe = () => {
             </button>
           </div>
 
-          <div className="informe-card">
+          <div className="informe-card informe-card--range">
             <img src={imgActas} alt="Reporte de Ingresos" className="informe-image" />
             <h3 className="informe-titulo">Reporte de Ingreso de Usuarios al Sistema por Rango</h3>
 
@@ -451,6 +644,116 @@ const Informe = () => {
               />
             </div>
             <button onClick={downloadIngresosPDF} className="informe-button">
+              Descargar PDF
+            </button>
+          </div>
+
+          <div className="informe-card informe-card--range">
+            <img src={imgActas} alt="Reporte por Prioridad" className="informe-image" />
+            <h3 className="informe-titulo">Reporte de Entrevistas por Prioridad</h3>
+
+            <div className="date-selector">
+              <label htmlFor="prioridad-report">Prioridad</label>
+              <select
+                id="prioridad-report"
+                value={selectedPrioridad}
+                onChange={(event) => setSelectedPrioridad(event.target.value)}
+              >
+                <option value="">Seleccione la prioridad</option>
+                {PRIORITY_OPTIONS.map((prioridad) => (
+                  <option key={prioridad} value={prioridad}>
+                    {prioridad}
+                  </option>
+                ))}
+              </select>
+
+              <label htmlFor="start-date-prioridad">Fecha inicial</label>
+              <input
+                type="date"
+                id="start-date-prioridad"
+                value={priorityStartDate}
+                onChange={(event) => setPriorityStartDate(event.target.value)}
+              />
+
+              <label htmlFor="end-date-prioridad">Fecha final</label>
+              <input
+                type="date"
+                id="end-date-prioridad"
+                value={priorityEndDate}
+                onChange={(event) => setPriorityEndDate(event.target.value)}
+              />
+            </div>
+            <button onClick={downloadPrioridadPDF} className="informe-button">
+              Descargar PDF
+            </button>
+          </div>
+
+          <div className="informe-card informe-card--range">
+            <img src={imgActas} alt="Reporte por Motivo" className="informe-image" />
+            <h3 className="informe-titulo">Reporte de Entrevistas por Motivo</h3>
+
+            <div className="date-selector">
+              <label htmlFor="motivo-report">Motivo</label>
+              <select
+                id="motivo-report"
+                value={selectedMotivo}
+                onChange={(event) => setSelectedMotivo(event.target.value)}
+              >
+                <option value="">Seleccione el motivo</option>
+                {motivos.map((motivo) => {
+                  const motivoValue =
+                    motivo?.nombremotivo || motivo?.nombre || motivo?.motivo || '';
+                  return (
+                    <option key={motivo?.idmotivo || motivoValue} value={motivoValue}>
+                      {motivoValue}
+                    </option>
+                  );
+                })}
+              </select>
+
+              <label htmlFor="start-date-motivo">Fecha inicial</label>
+              <input
+                type="date"
+                id="start-date-motivo"
+                value={motivoStartDate}
+                onChange={(event) => setMotivoStartDate(event.target.value)}
+              />
+
+              <label htmlFor="end-date-motivo">Fecha final</label>
+              <input
+                type="date"
+                id="end-date-motivo"
+                value={motivoEndDate}
+                onChange={(event) => setMotivoEndDate(event.target.value)}
+              />
+            </div>
+            <button onClick={downloadMotivoPDF} className="informe-button">
+              Descargar PDF
+            </button>
+          </div>
+
+          <div className="informe-card informe-card--range">
+            <img src={imgActas} alt="Reporte comparativo de tiempos" className="informe-image" />
+            <h3 className="informe-titulo">Comparativa de Tiempo Estimado vs Tiempo Real</h3>
+
+            <div className="date-selector">
+              <label htmlFor="start-date-comparativa">Fecha inicial</label>
+              <input
+                type="date"
+                id="start-date-comparativa"
+                value={comparativaStartDate}
+                onChange={(event) => setComparativaStartDate(event.target.value)}
+              />
+
+              <label htmlFor="end-date-comparativa">Fecha final</label>
+              <input
+                type="date"
+                id="end-date-comparativa"
+                value={comparativaEndDate}
+                onChange={(event) => setComparativaEndDate(event.target.value)}
+              />
+            </div>
+            <button onClick={downloadComparativaTiemposPDF} className="informe-button">
               Descargar PDF
             </button>
           </div>

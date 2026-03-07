@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./InicioProfesores.css";
-import directorImage from "../../../recursos/image/Directora.jpg";
 import { obtenerPanelDocente } from "../../profesores/services/profesor.service.jsx";
 import { getSessionUser } from "../../../utils/session.js";
 
@@ -11,7 +10,6 @@ const InicioProfesores = () => {
 
   const [docente, setDocente] = useState(null);
   const [stats, setStats] = useState([]);
-  const [quickActions, setQuickActions] = useState([]);
   const [todayPanels, setTodayPanels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,7 +43,6 @@ const InicioProfesores = () => {
         const { data } = await obtenerPanelDocente(resolvedIdDocente);
         setDocente(data.docente ?? null);
         setStats(Array.isArray(data.stats) ? data.stats : []);
-        setQuickActions(Array.isArray(data.quickActions) ? data.quickActions : []);
         setTodayPanels(Array.isArray(data.todayPanels) ? data.todayPanels : []);
       } catch (fetchError) {
         console.error("Error al obtener el panel docente:", fetchError);
@@ -65,6 +62,71 @@ const InicioProfesores = () => {
     navigate(route);
   };
 
+  const sessionUser = useMemo(() => getSessionUser(), []);
+
+  const statsView = useMemo(
+    () =>
+      stats.map((item) => {
+        const normalizedLabel = (item?.label || "").toString().trim().toLowerCase();
+        if (normalizedLabel === "avisos") {
+          return { ...item, label: "Entrevistas" };
+        }
+        return item;
+      }),
+    [stats]
+  );
+
+  const todayView = useMemo(
+    () =>
+      todayPanels.map((panel) => {
+        const title = (panel?.title || "").toString().trim().toLowerCase();
+        if (title === "actas de hoy") {
+          return {
+            ...panel,
+            title: "Actas creadas hoy",
+            detail: "Registros generados durante la jornada actual.",
+          };
+        }
+        if (title === "entrevistas programadas") {
+          return {
+            ...panel,
+            title: "Entrevistas de hoy",
+            detail: "Citas programadas para la fecha seleccionada.",
+          };
+        }
+        if (title === "citas enviadas") {
+          return {
+            ...panel,
+            title: "Entrevistas completadas",
+            detail: "Entrevistas que ya cambiaron de estado hoy.",
+          };
+        }
+        return panel;
+      }),
+    [todayPanels]
+  );
+
+  const primaryActions = useMemo(
+    () => [
+      {
+        title: "Ver entrevistas",
+        detail: "Revisa, confirma o actualiza las entrevistas del dia.",
+        route: "/listaEntrevistas",
+      },
+      {
+        title: "Citar a padres",
+        detail: "Agenda nuevas entrevistas con padres de familia.",
+        route: "/psicologoListPadres",
+      },
+      {
+        title: "Configuracion",
+        detail: "Actualiza tus datos y preferencias del perfil.",
+        route: "/configs",
+      },
+    ],
+    []
+  );
+
   if (loading) {
     return (
       <main className="inicio-docente">
@@ -82,12 +144,13 @@ const InicioProfesores = () => {
   }
 
   const docenteNombre = docente?.nombre || "Docente";
-  const docenteDetalle = docente?.idMateria
-    ? `Materia asignada: ${docente.idMateria}`
-    : "Docente IDEB";
+  const docenteRol =
+    sessionUser?.role || sessionUser?.rol || location.state?.role || location.state?.rol || "Docente";
+  const docenteDetalle =
+    docenteRol === "Psicologo" ? "Seguimiento y orientacion escolar" : "Panel de gestion academica";
   const heroCopy = docente?.nombre
-    ? `Disfruta de sistema de control IDEB.`
-    : "Accede rapido a tus tareas.";
+    ? "Consulta tu carga real del dia y accede solo a acciones que si forman parte de tu trabajo."
+    : "Accede rapidamente a tus tareas prioritarias.";
 
   return (
     <main className="inicio-docente">
@@ -97,7 +160,7 @@ const InicioProfesores = () => {
           <h1>Bienvenid@ {docenteNombre}</h1>
           <p>{heroCopy}</p>
           <div className="inicio-docente__chips">
-            {stats.map(({ label, value }) => (
+            {statsView.map(({ label, value }) => (
               <span key={label} className="inicio-docente__chip">
                 <strong>{value}</strong>
                 <span>{label}</span>
@@ -105,49 +168,28 @@ const InicioProfesores = () => {
             ))}
           </div>
           <div className="inicio-docente__hero-actions">
-            <button type="button" onClick={() => goTo("/profesores/actas")}>
-              Registrar acta
-            </button>
-            <button
-              type="button"
-              className="inicio-docente__hero-actions--outline"
-              onClick={() => goTo("/profesores/noticias")}
-            >
-              Ver avisos
-            </button>
+          
           </div>
         </div>
 
         <div className="inicio-docente__hero-card">
-          <img src={directorImage} alt={`Perfil de ${docenteNombre}`} />
-          <div className="inicio-docente__hero-card-info">
-            <span>{docenteNombre}</span>
-            <small>{docenteDetalle}</small>
-          </div>
-        </div>
-
-
-      </section>
-
-      <section className="inicio-docente__section">
-        <header>
-          <h2>Acciones rapidas</h2>
-        </header>
-        <div className="inicio-docente__grid">
-          {quickActions.map(({ title, subtitle, badge, route }) => (
-            <article key={title} className="inicio-docente__card inicio-docente__card--action">
-              <span className="inicio-docente__badge" aria-hidden="true">
-                {badge}
-              </span>
+          <div className="inicio-docente__profile-shell">
+            <span className="inicio-docente__profile-badge">{docenteRol}</span>
+            <h2>{docenteNombre}</h2>
+            <p>{docenteDetalle}</p>
+            <div className="inicio-docente__profile-meta">
               <div>
-                <h3>{title}</h3>
-                <p>{subtitle}</p>
+                <span>Estado</span>
+                <strong>Activo</strong>
               </div>
-              <button type="button" onClick={() => goTo(route)}>
-                Abrir
-              </button>
-            </article>
-          ))}
+              <div>
+                <span>Entrevistas</span>
+                <strong>
+                  {statsView.find((item) => item.label === "Entrevistas")?.value || "0"}
+                </strong>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -156,15 +198,31 @@ const InicioProfesores = () => {
           <h2>Hoy</h2>
         </header>
         <div className="inicio-docente__grid inicio-docente__grid--metrics">
-          {todayPanels.map(({ title, value, detail, actionLabel, route }) => (
+          {todayView.map(({ title, value, detail }) => (
             <article key={title} className="inicio-docente__card inicio-docente__card--metric">
               <div>
                 <span className="inicio-docente__metric-value">{value}</span>
                 <h3>{title}</h3>
                 <p>{detail}</p>
               </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="inicio-docente__section">
+        <header>
+          <h2>Acciones utiles</h2>
+        </header>
+        <div className="inicio-docente__grid">
+          {primaryActions.map(({ title, detail, route }) => (
+            <article key={title} className="inicio-docente__card inicio-docente__card--action">
+              <div className="inicio-docente__card-copy">
+                <h3>{title}</h3>
+                <p>{detail}</p>
+              </div>
               <button type="button" onClick={() => goTo(route)}>
-                {actionLabel}
+                Abrir
               </button>
             </article>
           ))}

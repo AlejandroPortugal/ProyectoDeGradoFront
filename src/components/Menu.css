@@ -2,8 +2,8 @@
 :root{
   --green-dark:#003400;
   --green:#006414;
-  --sidebar-min:240px;
-  --sidebar-max:280px;
+  --sidebar-min:260px;
+  --sidebar-max:320px;
 }
 
 /* ---------- SIDEBAR (desktop por defecto) ---------- */
@@ -182,7 +182,7 @@
 /* ==================== MODO MOVIL (<= 767px) ==================== */
 @media (max-width:767px){
   .sidebar{
-    width:min(92vw, 360px);
+    width:min(92vw, 380px);
     height:100vh;
     top:0;
     transform:translateX(-100%);

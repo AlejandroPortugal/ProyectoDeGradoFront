@@ -24,6 +24,10 @@
   position: relative;
 }
 
+.users-modal__content--wide {
+  width: min(860px, 94vw);
+}
+
 .users-modal__close {
   position: absolute;
   top: 16px;
@@ -203,6 +207,10 @@
   .users-modal__content {
     padding: 24px;
     gap: 16px;
+  }
+
+  .users-modal__content--wide {
+    width: min(94vw, 94vw);
   }
 
   .users-modal__info-grid {

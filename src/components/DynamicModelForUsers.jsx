@@ -10,6 +10,7 @@ const DynamicModelForUsers = ({
   onCancel,
   onConfirm,
   showDescription = false,
+  contentClassName = "",
 }) => {
   if (!isOpen) {
     return null;
@@ -25,7 +26,7 @@ const DynamicModelForUsers = ({
 
   return (
     <div className="users-modal__overlay">
-      <div className="users-modal__content">
+      <div className={`users-modal__content${contentClassName ? ` ${contentClassName}` : ''}`}>
         <button
           type="button"
           className="users-modal__close"

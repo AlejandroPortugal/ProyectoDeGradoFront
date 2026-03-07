@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import './Configuraciones.css';
 import {
     getAdministradorById,
@@ -11,49 +11,62 @@ import Toast from '../../../components/Toast.jsx';
 import eyeIcon from '../../../recursos/icons/Eye.svg';
 import { getSessionUser } from '../../../utils/session.js';
 
+const EMPTY_FORM = {
+    nombres: '',
+    apellidoPaterno: '',
+    apellidoMaterno: '',
+    rol: '',
+    contrasenaNueva: '',
+    confirmarContrasena: '',
+};
 
+const normalizeRole = (role) => {
+    const rawRole = (role || '').toString().trim();
+    const normalized = rawRole
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
+
+    if (normalized === 'administrador') return 'Administrador';
+    if (normalized === 'padre de familia') return 'Padre de Familia';
+    if (normalized === 'profesor') return 'Profesor';
+    if (normalized === 'psicologo') return 'Psicologo';
+    return rawRole;
+};
 
 const Configuraciones = () => {
     const [toast, setToast] = useState({ message: '', type: '', visible: false });
     const [enablePasswordFields, setEnablePasswordFields] = useState(false);
-
-    const [formData, setFormData] = useState({
-        nombres: '',
-        apellidos: '',
-        correo: '',
-        rol: '',
-        contrasenaActual: '',
-        contrasenaNueva: '',
-        confirmarContrasena: '',
+    const [userId, setUserId] = useState(null);
+    const [userRole, setUserRole] = useState('');
+    const [formData, setFormData] = useState(EMPTY_FORM);
+    const [initialData, setInitialData] = useState(null);
+    const [showPassword, setShowPassword] = useState({
+        contrasenaNueva: false,
+        confirmarContrasena: false,
     });
 
     const handleEnablePasswordFields = () => {
         setEnablePasswordFields(true);
     };
 
-    const [userId, setUserId] = useState(null);
-    const [userRole, setUserRole] = useState('');
-    const [showPassword, setShowPassword] = useState({
-        contrasenaActual: false,
-        contrasenaNueva: false,
-        confirmarContrasena: false,
-    });
-
     useEffect(() => {
         const parsedUser = getSessionUser();
-        if (parsedUser) {
-            setUserId(parsedUser.id);
-            setUserRole(parsedUser.role);
-            fetchUserData(parsedUser.id, parsedUser.role);
-        } else {
-            console.error("No se pudo reconstruir la sesion desde el token");
+        if (!parsedUser) {
+            console.error('No se pudo reconstruir la sesion desde el token');
+            return;
         }
+
+        const normalizedRole = normalizeRole(parsedUser.role);
+        setUserId(parsedUser.id);
+        setUserRole(normalizedRole);
+        fetchUserData(parsedUser.id, normalizedRole);
     }, []);
 
     const fetchUserData = async (id, role) => {
         try {
             let response;
-            switch (role) {
+            switch (normalizeRole(role)) {
                 case 'Administrador':
                     response = await getAdministradorById(id);
                     break;
@@ -63,7 +76,7 @@ const Configuraciones = () => {
                 case 'Profesor':
                     response = await getProfesorById(id);
                     break;
-                case 'Psicólogo':
+                case 'Psicologo':
                     response = await getPsicologoById(id);
                     break;
                 default:
@@ -71,40 +84,68 @@ const Configuraciones = () => {
                     return;
             }
 
-            const userData = response.data;
-            setFormData({
-                ...formData,
+            const userData = response.data || {};
+            const nextData = {
                 nombres: userData.nombres || '',
-                apellidos: `${userData.apellidopaterno || ''} ${userData.apellidomaterno || ''}`,
-                correo: userData.email || '',
-                rol: role,
-            });
-        } catch (error) {
-            setToast({ message: 'Error al obtener los datos del usuario', type: 'error', visible: true });
+                apellidoPaterno: userData.apellidopaterno || '',
+                apellidoMaterno: userData.apellidomaterno || '',
+                rol: normalizeRole(role),
+                contrasenaNueva: '',
+                confirmarContrasena: '',
+            };
 
+            setInitialData(nextData);
+            setFormData(nextData);
+        } catch (error) {
+            console.error('Error al obtener los datos del usuario:', error);
+            setToast({ message: 'Error al obtener los datos del usuario', type: 'error', visible: true });
         }
     };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const togglePasswordVisibility = (field) => {
+        if (!enablePasswordFields) return;
+
         setShowPassword((prev) => ({
             ...prev,
             [field]: !prev[field],
         }));
     };
 
+    const validatePassword = (password) => {
+        const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return regex.test(password);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!formData.nombres.trim() || !formData.apellidoPaterno.trim() || !formData.apellidoMaterno.trim()) {
+            setToast({
+                message: 'Nombres, apellido paterno y apellido materno son obligatorios.',
+                type: 'error',
+                visible: true,
+            });
+            return;
+        }
+
         if (enablePasswordFields) {
-            // Validar contraseñas
+            if (!formData.contrasenaNueva) {
+                setToast({
+                    message: 'Ingresa la nueva contrasena para actualizarla.',
+                    type: 'error',
+                    visible: true,
+                });
+                return;
+            }
+
             if (!validatePassword(formData.contrasenaNueva)) {
                 setToast({
-                    message: 'La nueva contraseña debe tener al menos una mayúscula, un número y un carácter especial.',
+                    message: 'La nueva contrasena debe tener al menos una mayuscula, un numero y un caracter especial.',
                     type: 'error',
                     visible: true,
                 });
@@ -113,7 +154,7 @@ const Configuraciones = () => {
 
             if (formData.contrasenaNueva !== formData.confirmarContrasena) {
                 setToast({
-                    message: 'Las contraseñas no coinciden.',
+                    message: 'Las contrasenas no coinciden.',
                     type: 'error',
                     visible: true,
                 });
@@ -121,16 +162,19 @@ const Configuraciones = () => {
             }
         }
 
-        try {
-            const [apellidopaterno, apellidomaterno] = formData.apellidos.split(' ');
-            const payload = {
-                nombres: formData.nombres,
-                apellidopaterno,
-                apellidomaterno,
-                email: formData.correo,
-            };
+        const payload = {
+            nombres: formData.nombres.trim(),
+            apellidopaterno: formData.apellidoPaterno.trim(),
+            apellidomaterno: formData.apellidoMaterno.trim(),
+            rol: normalizeRole(formData.rol || userRole),
+        };
 
-            switch (userRole) {
+        if (enablePasswordFields && formData.contrasenaNueva) {
+            payload.contrasenia = formData.contrasenaNueva;
+        }
+
+        try {
+            switch (normalizeRole(userRole)) {
                 case 'Administrador':
                     await putAdministrador(userId, payload);
                     break;
@@ -140,7 +184,7 @@ const Configuraciones = () => {
                 case 'Profesor':
                     await putProfesor(userId, payload);
                     break;
-                case 'Psicólogo':
+                case 'Psicologo':
                     await putPsicologo(userId, payload);
                     break;
                 default:
@@ -148,60 +192,63 @@ const Configuraciones = () => {
                     return;
             }
 
-            setToast({ message: 'Datos actualizados correctamente', type: 'success', visible: true });
-
-            // Bloquear los campos de contraseña tras guardar
-            setEnablePasswordFields(false);
-            setFormData((prev) => ({
-                ...prev,
-                contrasenaActual: '',
+            const refreshedData = {
+                ...formData,
                 contrasenaNueva: '',
                 confirmarContrasena: '',
-            }));
+            };
+
+            setInitialData(refreshedData);
+            setFormData(refreshedData);
+            setEnablePasswordFields(false);
+            setShowPassword({
+                contrasenaNueva: false,
+                confirmarContrasena: false,
+            });
+
+            setToast({ message: 'Datos actualizados correctamente', type: 'success', visible: true });
         } catch (error) {
             console.error('Error al actualizar los datos:', error);
-            setToast({ message: 'Ocurrió un error al actualizar los datos', type: 'error', visible: true });
+            setToast({ message: 'Ocurrio un error al actualizar los datos', type: 'error', visible: true });
         }
     };
 
-
     const handleCancel = () => {
-        // Recuperar datos iniciales del usuario
-        fetchUserData(userId, userRole);
+        if (initialData) {
+            setFormData(initialData);
+        }
 
-        // Bloquear los campos de contraseña y resetear los valores
         setEnablePasswordFields(false);
-        setFormData((prev) => ({
-            ...prev,
-            contrasenaActual: '',
-            contrasenaNueva: '',
-            confirmarContrasena: '',
-        }));
-
-        // Mostrar mensaje de cancelación
+        setShowPassword({
+            contrasenaNueva: false,
+            confirmarContrasena: false,
+        });
         setToast({ message: 'Cambios cancelados', type: 'info', visible: true });
     };
 
-    const validatePassword = (password) => {
-        const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        return regex.test(password);
-    };
-
-
-
-    const detectedRole = formData.rol || userRole;
+    const detectedRole = normalizeRole(formData.rol || userRole);
     const roleDescription = {
-        Administrador: 'Gestiona accesos, roles y la configuración general del sistema.',
-        Profesor: 'Actualiza tus datos y administra la información de tu aula.',
-        'Padre de Familia': 'Mantén tus datos al día para recibir las notificaciones y reportes.',
-        Psicólogo: 'Asegura la confidencialidad de tus entrevistas manteniendo tu perfil actualizado.',
+        Administrador: 'Gestiona accesos, roles y la configuracion general del sistema.',
+        Profesor: 'Actualiza tus datos y administra la informacion de tu aula.',
+        'Padre de Familia': 'Manten tus datos al dia para recibir las notificaciones y reportes.',
+        Psicologo: 'Actualiza los datos de tu perfil.',
     }[detectedRole] || 'Actualiza tus datos personales y de acceso cuando lo necesites.';
-    
+
+    const hasPersonalData = useMemo(
+        () =>
+            Boolean(
+                formData.nombres.trim() &&
+                    formData.apellidoPaterno.trim() &&
+                    formData.apellidoMaterno.trim()
+            ),
+        [formData.nombres, formData.apellidoPaterno, formData.apellidoMaterno]
+    );
+
     return (
         <main className="configuraciones-page">
             <section className="configuraciones-hero">
                 <div className="configuraciones-hero__copy">
-                    <span className="configuraciones-hero__eyebrow">Centro de configuración</span>
+                    <span className="configuraciones-hero__eyebrow">Centro de configuracion</span>
                     <h2>Gestiona tu perfil y seguridad con confianza</h2>
                     <p>{roleDescription}</p>
                     <div className="configuraciones-hero__meta">
@@ -209,30 +256,13 @@ const Configuraciones = () => {
                             Rol asignado: <strong>{detectedRole || 'Sin rol'}</strong>
                         </span>
                         <span className="configuraciones-hero__chip">
-                            Última actualización: <strong>{new Date().toLocaleDateString()}</strong>
+                            Ultima actualizacion: <strong>{new Date().toLocaleDateString()}</strong>
                         </span>
                         <span className="configuraciones-hero__chip">
-                            Estado de contraseña: <strong>{enablePasswordFields ? 'En edición' : 'Sin cambios'}</strong>
+                            Estado de contrasena: <strong>{enablePasswordFields ? 'En edicion' : 'Sin cambios'}</strong>
                         </span>
                     </div>
-                </div>
-
-                <div className="configuraciones-hero__stats">
-                    <article className="configuraciones-hero__stat-card">
-                        <span className="configuraciones-hero__stat-count">{formData.nombres ? '✓' : '-'}</span>
-                        <span className="configuraciones-hero__stat-label">Datos personales</span>
-                    </article>
-                    <article className="configuraciones-hero__stat-card">
-                        <span className="configuraciones-hero__stat-count">{detectedRole ? '✓' : '-'}</span>
-                        <span className="configuraciones-hero__stat-label">Rol activo</span>
-                    </article>
-                    <article className="configuraciones-hero__stat-card">
-                        <span className="configuraciones-hero__stat-count">
-                            {enablePasswordFields ? '…' : '✓'}
-                        </span>
-                        <span className="configuraciones-hero__stat-label">Seguridad</span>
-                    </article>
-                </div>
+                </div>  
 
                 <div className="configuraciones-hero__tools">
                     <button type="button" className="configuraciones-hero__action" onClick={handleCancel}>
@@ -244,7 +274,7 @@ const Configuraciones = () => {
                         onClick={handleEnablePasswordFields}
                         disabled={enablePasswordFields}
                     >
-                        {enablePasswordFields ? 'Edición habilitada' : 'Actualizar contraseña'}
+                        {enablePasswordFields ? 'Edicion habilitada' : 'Actualizar contrasena'}
                     </button>
                 </div>
             </section>
@@ -254,149 +284,127 @@ const Configuraciones = () => {
                     <Toast
                         message={toast.message}
                         type={toast.type}
-                        onClose={() => setToast({ ...toast, visible: false })}
+                        onClose={() => setToast((prev) => ({ ...prev, visible: false }))}
                     />
                 )}
+
                 <form onSubmit={handleSubmit} className="configuraciones-grid">
-                    {/* Card de Información Personal */}
                     <div className="configuraciones-card">
-                        <h2 className="section-title">Información Personal</h2>
+                        <h2 className="section-title">Informacion personal</h2>
+
                         <div className="form-group">
                             <label htmlFor="nombres">Nombres</label>
-                            <div className="editable-field">
-                                <input
-                                    type="text"
-                                    id="nombres"
-                                    name="nombres"
-                                    value={formData.nombres}
-                                    onChange={handleInputChange}
-                                />
-                                <button type="button" className="edit-btn-configuracion">✎</button>
-                            </div>
+                            <input
+                                type="text"
+                                id="nombres"
+                                name="nombres"
+                                value={formData.nombres}
+                                onChange={handleInputChange}
+                            />
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="apellidos">Apellidos</label>
-                            <div className="editable-field">
-                                <input
-                                    type="text"
-                                    id="apellidos"
-                                    name="apellidos"
-                                    value={formData.apellidos}
-                                    onChange={handleInputChange}
-                                />
-                                <button type="button" className="edit-btn-configuracion">✎</button>
-                            </div>
+                            <label htmlFor="apellidoPaterno">Apellido paterno</label>
+                            <input
+                                type="text"
+                                id="apellidoPaterno"
+                                name="apellidoPaterno"
+                                value={formData.apellidoPaterno}
+                                onChange={handleInputChange}
+                            />
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="correo">Correo Electrónico</label>
-                            <div className="editable-field">
-                                <input
-                                    type="email"
-                                    id="correo"
-                                    name="correo"
-                                    value={formData.correo}
-                                    onChange={handleInputChange}
-                                />
-                                <button type="button" className="edit-btn-configuracion">✎</button>
-                            </div>
+                            <label htmlFor="apellidoMaterno">Apellido materno</label>
+                            <input
+                                type="text"
+                                id="apellidoMaterno"
+                                name="apellidoMaterno"
+                                value={formData.apellidoMaterno}
+                                onChange={handleInputChange}
+                            />
                         </div>
                     </div>
 
-                    {/* Card de Cambiar Contraseña */}
                     <div className="configuraciones-card">
-                        <h2 className="section-title">Cambiar Contraseña</h2>
+                        <h2 className="section-title">Acceso y seguridad</h2>
+
                         <div className="form-group">
                             <label htmlFor="rol">Rol</label>
-                            <input type="text" id="rol" name="rol" value={formData.rol} disabled />
+                            <input type="text" id="rol" name="rol" value={detectedRole} disabled />
                         </div>
 
                         <div className="form-group">
-  <label htmlFor="contrasenaActual">Contraseña Actual</label>
-  <div className="password-field">
-    <input
-      type={showPassword.contrasenaActual ? 'text' : 'password'}
-      id="contrasenaActual"
-      name="contrasenaActual"
-      value={formData.contrasenaActual}
-      onChange={handleInputChange}
-    />
-    <img
-      src={eyeIcon}
-      alt="Toggle Password Visibility"
-      className="eye-icon"
-      onClick={() => togglePasswordVisibility('contrasenaActual')}
-    />
-  </div>
-</div>
+                            <label htmlFor="contrasenaNueva">Contrasena nueva</label>
+                            <div className="password-field">
+                                <input
+                                    type={showPassword.contrasenaNueva ? 'text' : 'password'}
+                                    id="contrasenaNueva"
+                                    name="contrasenaNueva"
+                                    value={formData.contrasenaNueva}
+                                    onChange={handleInputChange}
+                                    disabled={!enablePasswordFields}
+                                />
+                                <img
+                                    src={eyeIcon}
+                                    alt="Mostrar u ocultar contrasena"
+                                    className="eye-icon"
+                                    onClick={() => togglePasswordVisibility('contrasenaNueva')}
+                                    style={{
+                                        opacity: enablePasswordFields ? 1 : 0.5,
+                                        cursor: enablePasswordFields ? 'pointer' : 'not-allowed',
+                                    }}
+                                />
+                            </div>
+                        </div>
 
-<div className="form-group">
-  <label htmlFor="contrasenaNueva">Contraseña Nueva</label>
-  <div className="password-field">
-    <input
-      type={showPassword.contrasenaNueva ? 'text' : 'password'}
-      id="contrasenaNueva"
-      name="contrasenaNueva"
-      value={formData.contrasenaNueva}
-      onChange={handleInputChange}
-      disabled={!enablePasswordFields}
-    />
-    <img
-      src={eyeIcon}
-      alt="Toggle Password Visibility"
-      className="eye-icon"
-      onClick={() => togglePasswordVisibility('contrasenaNueva')}
-      style={{ opacity: enablePasswordFields ? 1 : 0.5, cursor: enablePasswordFields ? 'pointer' : 'not-allowed' }}
-    />
-  </div>
-</div>
+                        <div className="form-group">
+                            <label htmlFor="confirmarContrasena">Confirmar contrasena</label>
+                            <div className="password-field">
+                                <input
+                                    type={showPassword.confirmarContrasena ? 'text' : 'password'}
+                                    id="confirmarContrasena"
+                                    name="confirmarContrasena"
+                                    value={formData.confirmarContrasena}
+                                    onChange={handleInputChange}
+                                    disabled={!enablePasswordFields}
+                                />
+                                <img
+                                    src={eyeIcon}
+                                    alt="Mostrar u ocultar contrasena"
+                                    className="eye-icon"
+                                    onClick={() => togglePasswordVisibility('confirmarContrasena')}
+                                    style={{
+                                        opacity: enablePasswordFields ? 1 : 0.5,
+                                        cursor: enablePasswordFields ? 'pointer' : 'not-allowed',
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
 
-<div className="form-group">
-  <label htmlFor="confirmarContrasena">Confirmar Contraseña</label>
-  <div className="password-field">
-    <input
-      type={showPassword.confirmarContrasena ? 'text' : 'password'}
-      id="confirmarContrasena"
-      name="confirmarContrasena"
-      value={formData.confirmarContrasena}
-      onChange={handleInputChange}
-      disabled={!enablePasswordFields}
-    />
-    <img
-      src={eyeIcon}
-      alt="Toggle Password Visibility"
-      className="eye-icon"
-      onClick={() => togglePasswordVisibility('confirmarContrasena')}
-      style={{ opacity: enablePasswordFields ? 1 : 0.5, cursor: enablePasswordFields ? 'pointer' : 'not-allowed' }}
-    />
-  </div>
-</div>
+                    <div className="form-group">
+                        <div className="form-actions">
+                            <button type="button" className="cancel-btn" onClick={handleCancel}>
+                                Cancelar
+                            </button>
+                            <button type="submit" className="confirm-btn">
+                                Guardar cambios
+                            </button>
+                            <button
+                                type="button"
+                                className="enable-password-btn"
+                                onClick={handleEnablePasswordFields}
+                                disabled={enablePasswordFields}
+                            >
+                                Actualizar contrasena
+                            </button>
+                        </div>
                     </div>
                 </form>
-                <div className="form-group">
-                    <div className="form-actions">
-                        <button type="button" className="cancel-btn" onClick={handleCancel}>
-                            Cancelar
-                        </button>
-                        <button type="submit" className="confirm-btn" onClick={handleSubmit}>
-                            Confirmar
-                        </button>
-                        <button
-                            type="button"
-                            className="enable-password-btn"
-                            onClick={handleEnablePasswordFields}
-                            disabled={enablePasswordFields}
-                        >
-                            Actualizar Contraseña
-                        </button>
-                    </div>
-                </div>
             </div>
         </main>
     );
 };
 
 export default Configuraciones;
-
-

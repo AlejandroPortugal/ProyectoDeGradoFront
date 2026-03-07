@@ -18,6 +18,8 @@ import EditarActa from './features/actas/pages/EditarActa.jsx';
 import ListEstudiantes from './features/estudiantes/pages/ListEstudiantes.jsx';
 import ListaActas from './features/actas/pages/ListaActas.jsx';
 import EliminarActas from './features/actas/pages/EliminarActas.jsx';
+import VerificacionActas from './features/actas/pages/VerificacionActas.jsx';
+import VerificacionActasDetalle from './features/actas/pages/VerificacionActasDetalle.jsx';
 import ListaProfesoresEntrevista from './features/padres/pages/ListaProfesoresEntrevista.jsx';
 import AgendarEntrevista from './features/padres/pages/AgendarEntrevista.jsx';
 import InicioPadres from './features/padres/pages/InicioPadres.jsx';
@@ -78,7 +80,7 @@ const AppContent = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-  const sidebarWidth = 'clamp(240px, 24vw, 280px)';
+  const sidebarWidth = 'clamp(260px, 26vw, 320px)';
 
   const contentStyle = {
     marginLeft: shouldShowMenu && !isMobile ? sidebarWidth : '0',
@@ -135,7 +137,11 @@ const AppContent = () => {
           
           <Route
             path="/contacto"
-            element={<Contacto />}
+            element={
+              <ProtectedRoute role="Padre de Familia">
+                <Contacto />
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/listaprofesoresentrevistas"
@@ -217,6 +223,22 @@ const AppContent = () => {
             element={
               <ProtectedRoute role="Administrador">
                 <RecuperarUsuarios />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/verificacion-actas"
+            element={
+              <ProtectedRoute role="Administrador">
+                <VerificacionActas />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/verificacion-actas/:idestudiante/actas"
+            element={
+              <ProtectedRoute role="Administrador">
+                <VerificacionActasDetalle />
               </ProtectedRoute>
             }
           />
@@ -366,15 +388,19 @@ const AppContent = () => {
            <Route
             path="/padresHome"
 
-            element={ 
+            element={
+              <ProtectedRoute role="Padre de Familia">
                 <InicioPadres />
+              </ProtectedRoute>
             }
           />
 
 <Route
   path="/padres"
   element={
+    <ProtectedRoute role="Padre de Familia">
       <InicioPadres />
+    </ProtectedRoute>
   }
 />
 

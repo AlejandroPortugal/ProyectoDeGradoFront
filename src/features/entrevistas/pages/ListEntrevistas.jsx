@@ -1013,18 +1013,11 @@ const ListEntrevistas = () => {
 
   const buildWhatsappMessage = useCallback(
     (entrevista) => {
-      const docenteNombre = (
-        usuarioInfo?.nombreCompleto ||
-        (usuarioInfo?.nombres
-          ? `${usuarioInfo.nombres} ${usuarioInfo.apellidopaterno || ""} ${usuarioInfo.apellidomaterno || ""}`
-          : "") ||
-        location.state?.nombreCompleto ||
-        (location.state?.nombres
-          ? `${location.state.nombres} ${location.state?.apellidopaterno || ""} ${location.state?.apellidomaterno || ""}`
-          : "")
-      )
-        .replace(/\s+/g, " ")
-        .trim();
+      const docenteNombre = usuarioInfo?.nombres
+        ? `${usuarioInfo.nombres} ${usuarioInfo.apellidopaterno || ""} ${usuarioInfo.apellidomaterno || ""}`
+            .replace(/\s+/g, " ")
+            .trim()
+        : "";
 
       const nombrePadre = entrevista.nombre_completo || "familia";
       const motivoTexto = entrevista.motivo || "por confirmar";
@@ -1045,26 +1038,12 @@ const ListEntrevistas = () => {
         usuarioInfo?.materia ||
         "la materia asignada";
       const saludo = obtenerSaludoSegunHora(entrevista.fecha || fechaFiltro, entrevista.horainicio);
-      const generoPadre = (
-        entrevista.genero ||
-        entrevista.sexo ||
-        entrevista.tratamiento ||
-        ""
-      )
-        .toString()
-        .trim()
-        .toLowerCase();
-      const tratamientoPadre = ["f", "femenino", "mujer", "sra", "senora"].includes(generoPadre)
-        ? "Sra."
-        : ["m", "masculino", "hombre", "sr", "senor"].includes(generoPadre)
-          ? "Sr."
-          : "Sr(a).";
       const remitenteTexto = docenteNombre
         ? `Le escribe el docente ${docenteNombre} a cargo de la materia ${materiaTexto} del colegio Bancario (IDEB).`
         : `Le escribe el docente encargado de la materia ${materiaTexto} del colegio Bancario (IDEB).`;
 
       return [
-        `${saludo}, ${tratamientoPadre} ${nombrePadre}.`,
+        `${saludo}, ${nombrePadre}.`,
         `${remitenteTexto} A traves de este mensaje, se lo convoca a una entrevista con el siguiente detalle:`,
         "",
         `Estudiante por el que se lo convoca: ${estudianteTexto}`,
@@ -1075,7 +1054,7 @@ const ListEntrevistas = () => {
         "UNIDAD EDUCATIVA INSTITUTO DE EDUCACION BANCARIA",
       ].join("\n");
     },
-    [fechaFiltro, location.state, materiaNombre, usuarioInfo]
+    [fechaFiltro, materiaNombre, usuarioInfo]
   );
 
   const getWhatsappLink = useCallback(

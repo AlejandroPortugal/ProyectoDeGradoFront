@@ -48,7 +48,7 @@ const UserListPadres = () => {
         render: (row) => (
           <div className="padres-actions">
             <button type="button" className="padres-actions__btn" onClick={() => handleCite(row)}>
-              Citar
+              Agendar entrevista
             </button>
           </div>
         ),
@@ -96,7 +96,7 @@ const UserListPadres = () => {
           </div>
 
           <div className="padres-hero__actions padres-hero__actions--compact">
-            <button type="button" onClick={() => navigate("/formCitas")}>Crear cita</button>
+            <button type="button" onClick={() => navigate("/formCitas")}>Agendar entrevista a padre de familia nuevo</button>
             <button type="button" className="padres-hero__actions--ghost" onClick={() => navigate("/listaEntrevistas")}>
               Ver entrevistas
             </button>

@@ -36,6 +36,10 @@ export const obtenerListaEntrevistaPorRango = (fechas) => {
     return api.post(`/obtener/entrevistas/rango`, fechas);
 };
 
+export const obtenerComparativaTiemposPorRango = (fechas) => {
+    return api.post(`/obtener/entrevistas/comparativa-rango`, fechas);
+};
+
 export const obtenerEntrevistasPorPadre = (idPadre) => {
     return api.get(`/verEntrevistasPadres/${idPadre}`);
   };

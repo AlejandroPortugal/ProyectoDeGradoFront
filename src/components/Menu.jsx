@@ -20,6 +20,7 @@ const Menu = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [DropdownInfo, setDropdownInfo] = useState(false);
   const [DropdownActas, setDropdownActas] = useState(false);
+  const [isAdminActasOpen, setIsAdminActasOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, logout } = useContext(AuthContext);
@@ -72,6 +73,10 @@ const Menu = () => {
 
   const toggleDropdownActas = () => {
     setDropdownActas(!DropdownActas);
+  };
+
+  const toggleAdminActasDropdown = () => {
+    setIsAdminActasOpen((prev) => !prev);
   };
 
   const toggleMobileMenu = () => {
@@ -226,6 +231,32 @@ const Menu = () => {
             </ul>
           )}
 
+          {isAdministrador && (
+            <li>
+              <div className='sidebar-container'>
+                <div className="sidebar-link" onClick={toggleAdminActasDropdown}>
+                  Gestion de Actas
+                  <i className={`Icon-container-menu ${isAdminActasOpen ? 'rotate' : ''}`}>
+                    <img src={rowIcon} alt='Dropdown' />
+                  </i>
+                </div>
+              </div>
+            </li>
+          )}
+
+          {isAdminActasOpen && isAdministrador && (
+            <ul className="dropdown">
+              <li className='sidebar-container'>
+                <Link to="/verificacion-actas" className="sidebar-link">
+                  Verificacion de actas
+                  <i className='Icon-container-menu'>
+                    <img src={iconCheck} alt='Verificacion de actas' />
+                  </i>
+                </Link>
+              </li>
+            </ul>
+          )}
+
           {isProfesorOrPsicologo && (
             <li>
               <div className='sidebar-container'>
@@ -242,12 +273,22 @@ const Menu = () => {
             <li>
               <div className='sidebar-container'>
                 <Link to="/listaEntrevistas" className="sidebar-link">
-                  Entrevistas
+                  Lista de Entrevistas
                   <i className='Icon-container-menu'>
                     <img src={iconEntrevista} alt='Home' />
                   </i>
                 </Link>
               </div>
+            </li>
+          )}
+          {isProfesorOrPsicologo && (
+            <li className='sidebar-container'>
+              <Link to="/psicologoListPadres" className="sidebar-link">
+                Agendar entrevista
+                <i className='Icon-container-menu'>
+                  <img src={notificationIcon} alt='Agendar entrevista' />
+                </i>
+              </Link>
             </li>
           )}
 
@@ -278,7 +319,7 @@ const Menu = () => {
              
               <li className='sidebar-container'>
                 <Link to="/editarActa" className="sidebar-link">
-                  Editar una acta
+                  Editar acta
                   <i className='Icon-container-menu'>
                     <img src={iconEdit} alt='Home' />
                   </i>
@@ -286,22 +327,17 @@ const Menu = () => {
               </li>
               <li className='sidebar-container'>
                 <Link to="/eliminaracta" className="sidebar-link">
-                  Eliminar acta
+                  Recuperar acta eliminada
                   <i className='Icon-container-menu'>
                     <img src={iconDelete} alt='Home' />
                   </i>
                 </Link>
               </li>
-              <li className='sidebar-container'>
-                <Link to="/psicologoListPadres" className="sidebar-link">
-                  Citar a Padres
-                  <i className='Icon-container-menu'>
-                    <img src={notificationIcon} alt='Home' />
-                  </i>
-                </Link>
-              </li>
+            
             </ul>
+            
           )}
+           
         </ul>
 
         {/* Secciï¿½n de usuario en la parte inferior */}

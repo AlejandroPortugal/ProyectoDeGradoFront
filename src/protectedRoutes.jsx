@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from './auth';
 import Toast from './components/Toast';
@@ -8,6 +8,10 @@ const ProtectedRoute = ({ children, role }) => {
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const navigate = useNavigate();
+    const allowedRoles = useMemo(
+        () => (Array.isArray(role) ? role : [role]),
+        [role]
+    );
 
     const handleCloseToast = () => {
         setShowToast(false);
@@ -15,21 +19,24 @@ const ProtectedRoute = ({ children, role }) => {
 
     useEffect(() => {
         if (user === null) {
-            setToastMessage('Usuario no autenticado. Por favor, inicia sesión.');
+            setToastMessage('Usuario no autenticado. Por favor, inicia sesion.');
             setShowToast(true);
             navigate('/login');
-        } else if (user && !role.includes(user.role)) {
-            setToastMessage('No tienes permiso para acceder a esta página.');
+            return;
+        }
+
+        if (user && !allowedRoles.includes(user.role)) {
+            setToastMessage('No tienes permiso para acceder a esta pagina.');
             setShowToast(true);
             navigate('/unauthorized');
         }
-    }, [user, role, navigate]);
+    }, [user, allowedRoles, navigate]);
 
     if (user === null) {
-        return <div>Verificando autenticación...</div>;
+        return <div>Verificando autenticacion...</div>;
     }
 
-    if (!user || !role.includes(user.role)) {
+    if (!user || !allowedRoles.includes(user.role)) {
         return null;
     }
 

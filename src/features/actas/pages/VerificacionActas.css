@@ -1,0 +1,293 @@
+.verificacion-actas-layout {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 24px;
+}
+
+.verificacion-actas-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.8fr);
+  gap: 20px;
+  background:
+    radial-gradient(circle at top right, rgba(15, 81, 50, 0.18), transparent 40%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(242, 248, 244, 0.96));
+  border: 1px solid rgba(15, 81, 50, 0.08);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 14px 34px rgba(15, 81, 50, 0.08);
+}
+
+.verificacion-actas-hero__eyebrow {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #0f5132;
+}
+
+.verificacion-actas-hero__content h1 {
+  margin: 0;
+  font-size: clamp(30px, 4vw, 42px);
+  line-height: 1.05;
+  color: #0b2e13;
+}
+
+.verificacion-actas-hero__content p {
+  margin: 12px 0 0;
+  max-width: 58ch;
+  color: #3f6150;
+  line-height: 1.65;
+}
+
+.verificacion-actas-hero__meta {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.verificacion-actas-stat {
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: rgba(15, 81, 50, 0.06);
+  border: 1px solid rgba(15, 81, 50, 0.08);
+}
+
+.verificacion-actas-stat span {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #53705f;
+}
+
+.verificacion-actas-stat strong {
+  display: block;
+  margin-top: 8px;
+  font-size: clamp(20px, 3vw, 30px);
+  color: #0b2e13;
+}
+
+.verificacion-actas-panel {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 26px;
+  box-shadow: 0 14px 30px rgba(15, 81, 50, 0.08);
+  border: 1px solid rgba(15, 81, 50, 0.08);
+  display: grid;
+  gap: 18px;
+}
+
+.verificacion-actas-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 16px;
+}
+
+.verificacion-actas-search {
+  display: grid;
+  gap: 8px;
+  width: min(360px, 100%);
+}
+
+.verificacion-actas-search label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #40614a;
+}
+
+.verificacion-actas-search input {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 81, 50, 0.18);
+  background: #f8fbf9;
+  padding: 13px 15px;
+  font: inherit;
+  color: #153c20;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.verificacion-actas-search input:focus {
+  border-color: rgba(15, 81, 50, 0.42);
+  box-shadow: 0 0 0 4px rgba(15, 81, 50, 0.08);
+}
+
+.verificacion-actas-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.verificacion-actas-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+}
+
+.verificacion-actas-table thead th {
+  text-align: left;
+  padding: 14px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: #0f6a2f;
+}
+
+.verificacion-actas-table thead th:first-child {
+  border-top-left-radius: 14px;
+}
+
+.verificacion-actas-table thead th:last-child {
+  border-top-right-radius: 14px;
+}
+
+.verificacion-actas-table tbody td {
+  padding: 16px;
+  border-bottom: 1px solid rgba(15, 81, 50, 0.08);
+  color: #173d22;
+  vertical-align: middle;
+}
+
+.verificacion-actas-table tbody tr:nth-child(even) {
+  background: rgba(15, 81, 50, 0.03);
+}
+
+.verificacion-actas-btn {
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0f6a2f, #11853b);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  padding: 10px 18px;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(15, 106, 47, 0.18);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.verificacion-actas-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+  box-shadow: 0 14px 26px rgba(15, 106, 47, 0.22);
+}
+
+.verificacion-actas-btn--ghost {
+  background: #ffffff;
+  color: #0f6a2f;
+  border: 1px solid rgba(15, 106, 47, 0.2);
+  box-shadow: none;
+}
+
+.verificacion-actas-empty {
+  border: 1px dashed rgba(15, 81, 50, 0.2);
+  border-radius: 18px;
+  padding: 28px;
+  text-align: center;
+  color: #476554;
+  background: rgba(15, 81, 50, 0.03);
+}
+
+.verificacion-actas-detail {
+  display: grid;
+  gap: 18px;
+}
+
+.verificacion-actas-detail__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.verificacion-actas-detail__grid div,
+.verificacion-actas-detail__section {
+  border-radius: 16px;
+  border: 1px solid rgba(15, 81, 50, 0.08);
+  background: #f8fbf9;
+  padding: 16px;
+}
+
+.verificacion-actas-detail__grid span {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #567261;
+}
+
+.verificacion-actas-detail__grid strong {
+  color: #0b2e13;
+}
+
+.verificacion-actas-detail__section h3 {
+  margin: 0 0 10px;
+  color: #0b2e13;
+  font-size: 18px;
+}
+
+.verificacion-actas-detail__section p {
+  margin: 0;
+  color: #355544;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.verificacion-actas-detail__section--compare {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.verificacion-actas-detail__section--compare > div {
+  border-radius: 14px;
+  border: 1px solid rgba(15, 81, 50, 0.08);
+  background: #ffffff;
+  padding: 14px;
+}
+
+.verificacion-actas-detail__section--compare h3 {
+  font-size: 16px;
+}
+
+@media (max-width: 1024px) {
+  .verificacion-actas-hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .verificacion-actas-layout {
+    gap: 18px;
+  }
+
+  .verificacion-actas-hero,
+  .verificacion-actas-panel {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .verificacion-actas-detail__grid,
+  .verificacion-actas-detail__section--compare {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 540px) {
+  .verificacion-actas-table {
+    min-width: 620px;
+  }
+
+  .verificacion-actas-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
