@@ -490,31 +490,38 @@ const Informe = () => {
       const startY = await drawReportHeader(doc, {
         title: 'Informe Comparativo de Tiempos de Entrevistas',
         description:
-          'Comparativa entre el tiempo estimado y el tiempo real de atencion por entrevista, incluyendo el motivo registrado.',
+          'Resumen por entrevista con el tiempo estimado, hora de inicio de entrevista y duracion de atencion, incluyendo el motivo registrado.',
         dateRange: `${comparativaStartDate} al ${comparativaEndDate}`,
       });
 
       const tableColumn = [
+        'Nro',
         'Fecha',
         'Estudiante',
         'Motivo',
         'Tiempo estimado',
-        'Tiempo real',
-        'Diferencia',
+        'Inicio entrevista',
+        'Duracion entrevista',
       ];
-      const tableRows = comparativa.map((item) => [
+      const tableRows = comparativa.map((item, index) => [
+        String(index + 1),
         item.fecha || 'Sin registro',
         item.estudiante || 'Sin registro',
         item.motivo || 'Sin registro',
         item.tiempoEstimado || 'Sin registro',
-        item.tiempoReal || 'Sin registro',
-        item.diferencia || 'Sin registro',
+        item.inicioEntrevista || 'Sin registro',
+        item.duracionEntrevista || 'Sin registro',
       ]);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text(`Total de entrevistas: ${comparativa.length}`, 14, startY);
+      doc.setFont('helvetica', 'normal');
 
       autoTable(doc, {
         head: [tableColumn],
-        body: tableRows.length > 0 ? tableRows : [['Sin registros', '', '', '', '', '']],
-        ...buildTableOptions(startY),
+        body: tableRows.length > 0 ? tableRows : [['Sin registros', '', '', '', '', '', '']],
+        ...buildTableOptions(startY + 6),
       });
 
       doc.save(`comparativa_tiempos_${comparativaStartDate}_a_${comparativaEndDate}.pdf`);
@@ -734,10 +741,12 @@ const Informe = () => {
 
           <div className="informe-card informe-card--range">
             <img src={imgActas} alt="Reporte comparativo de tiempos" className="informe-image" />
-            <h3 className="informe-titulo">Comparativa de Tiempo Estimado vs Tiempo Real</h3>
+            <h3 className="informe-titulo">Comparativa de Tiempo Estimado</h3>
 
             <div className="date-selector">
-              <label htmlFor="start-date-comparativa">Fecha inicial</label>
+              
+              <label htm
+              lFor="start-date-comparativa">Fecha inicial</label>
               <input
                 type="date"
                 id="start-date-comparativa"

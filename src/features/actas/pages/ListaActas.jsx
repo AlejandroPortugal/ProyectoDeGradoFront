@@ -32,6 +32,7 @@ const ListaActas = () => {
   const [viewActa, setViewActa] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [actaToDelete, setActaToDelete] = useState(null);
+  const [focusActaFilter, setFocusActaFilter] = useState(location.state?.focusActa || null);
 
   const getStoredUserId = () => {
     try {
@@ -59,6 +60,55 @@ const ListaActas = () => {
     return Number.isFinite(parsed) ? parsed : null;
   };
 
+  const parseDateAsLocal = (value) => {
+    if (!value) return null;
+    const raw = String(value);
+    const onlyDate = raw.includes('T') ? raw.split('T')[0] : raw;
+    const [year, month, day] = onlyDate.split('-').map(Number);
+    if (!year || !month || !day) return null;
+    return new Date(year, month - 1, day);
+  };
+
+  const formatDateOnly = (value) => {
+    const parsedDate = parseDateAsLocal(value);
+    if (!parsedDate || Number.isNaN(parsedDate.getTime())) return value || '';
+    return parsedDate.toLocaleDateString('es-ES');
+  };
+
+  const getDateTime = (value) => {
+    const parsedDate = parseDateAsLocal(value);
+    return parsedDate ? parsedDate.getTime() : 0;
+  };
+
+  const normalizeText = (value) => (value || '').toString().trim().toLowerCase();
+  const toDateOnly = (value) => (value ? String(value).split('T')[0] : '');
+
+  const matchesFocusActa = (acta, focus) => {
+    if (!focus) return true;
+
+    const focusId = focus.idacta ?? focus.id ?? null;
+    if (focusId !== null && focusId !== undefined && focusId !== '') {
+      return Number(acta.idacta) === Number(focusId);
+    }
+
+    const hasReserva =
+      focus.idreservarentrevista !== null &&
+      focus.idreservarentrevista !== undefined &&
+      focus.idreservarentrevista !== '';
+    const hasFecha = Boolean(focus.fechadecreacion);
+    const hasDescripcion = Boolean(normalizeText(focus.descripcion));
+
+    if (!hasReserva && !hasFecha && !hasDescripcion) return true;
+    if (hasReserva && Number(acta.idreservarentrevista) !== Number(focus.idreservarentrevista)) return false;
+    if (hasFecha && toDateOnly(acta.fechadecreacion) !== toDateOnly(focus.fechadecreacion)) return false;
+    if (hasDescripcion) {
+      const actaDescripcion = normalizeText(acta.descripcion);
+      const focusDescripcion = normalizeText(focus.descripcion);
+      if (actaDescripcion !== focusDescripcion && !actaDescripcion.includes(focusDescripcion)) return false;
+    }
+    return true;
+  };
+
   const resolveActaId = (row) => {
     if (!row) return null;
     const direct = row.idacta ?? row.id;
@@ -84,6 +134,20 @@ const ListaActas = () => {
   const hideToast = () => {
     setToast({ show: false, message: '', type: '' });
   };
+
+  useEffect(() => {
+    const focusFromNav = location.state?.focusActa || null;
+    if (focusFromNav) {
+      setFocusActaFilter(focusFromNav);
+      setSearch('');
+    } else {
+      setFocusActaFilter(null);
+    }
+
+    if (location.state?.toastMessage) {
+      showToast(location.state.toastMessage, location.state?.toastType || 'success');
+    }
+  }, [location.state]);
 
   useEffect(() => {
     const fetchMaterias = async () => {
@@ -160,10 +224,12 @@ const ListaActas = () => {
       const motivo = acta.motivo?.toLowerCase() || '';
       const fecha = acta.fechadecreacion?.toLowerCase() || '';
       const term = search.toLowerCase();
-      return materia.includes(term) || motivo.includes(term) || fecha.includes(term);
+      const matchesSearch = materia.includes(term) || motivo.includes(term) || fecha.includes(term);
+      const matchesFocus = matchesFocusActa(acta, focusActaFilter);
+      return matchesSearch && matchesFocus;
     });
     setFilteredActas(filtered);
-  }, [search, actas]);
+  }, [search, actas, focusActaFilter]);
 
   const totalActas = actas.length;
   const filteredCount = filteredActas.length;
@@ -174,7 +240,10 @@ const ListaActas = () => {
       if (!acta.fechadecreacion) {
         return latest;
       }
-      const fecha = new Date(acta.fechadecreacion);
+      const fecha = parseDateAsLocal(acta.fechadecreacion);
+      if (!fecha || Number.isNaN(fecha.getTime())) {
+        return latest;
+      }
       if (!latest || fecha > latest) {
         return fecha;
       }
@@ -202,12 +271,12 @@ const ListaActas = () => {
     if (!withDate.length) return null;
 
     return withDate.sort(
-      (a, b) => new Date(b.fechadecreacion).getTime() - new Date(a.fechadecreacion).getTime()
+      (a, b) => getDateTime(b.fechadecreacion) - getDateTime(a.fechadecreacion)
     )[0];
   }, [actas]);
 
   const ultimaActualizacionTexto = ultimaActualizacion
-    ? ultimaActualizacion.toLocaleDateString()
+    ? ultimaActualizacion.toLocaleDateString('es-ES')
     : 'Sin registros';
 
   const estudianteNombre = estudiante
@@ -215,7 +284,9 @@ const ListaActas = () => {
     : 'Cargando...';
 
   const coincidenciasTexto =
-    filteredCount === totalActas
+    focusActaFilter
+      ? `Mostrando ${filteredCount} acta${filteredCount === 1 ? '' : 's'} de la creacion reciente.`
+      : filteredCount === totalActas
       ? 'Mostrando todas las actas activas.'
       : `Mostrando ${filteredCount} de ${totalActas} actas.`;
 
@@ -320,7 +391,11 @@ const ListaActas = () => {
   const columns = [
     { key: 'materia', label: 'Materia' },
     { key: 'motivo', label: 'Motivo' },
-    { key: 'fechadecreacion', label: 'Fecha' },
+    {
+      key: 'fechadecreacion',
+      label: 'Fecha',
+      render: (row) => formatDateOnly(row.fechadecreacion),
+    },
     {
       key: 'acciones',
       label: 'Accion',
@@ -408,7 +483,7 @@ const ListaActas = () => {
                   <strong>{actaReciente.materia || 'Sin materia'}</strong>
                   <p>{actaReciente.motivo || 'Motivo no registrado'}</p>
                   <small>
-                    {new Date(actaReciente.fechadecreacion).toLocaleDateString()} ·{' '}
+                    {formatDateOnly(actaReciente.fechadecreacion)} ·{' '}
                     {actaReciente.descripcion?.slice(0, 80) || 'Sin descripcion'}
                   </small>
                 </div>
@@ -473,7 +548,7 @@ const ListaActas = () => {
               </p>
               <p>
                 <strong>Fecha de creacion:</strong>{' '}
-                {new Date(viewActa.fechadecreacion).toLocaleDateString()}
+                {formatDateOnly(viewActa.fechadecreacion)}
               </p>
               <p>
                 <strong>Descripcion:</strong> {viewActa.descripcion}

@@ -139,11 +139,7 @@ function Login() {
           </button>
         </form>
 
-        <div className="register-link">
-          <p>
-            ¿No tienes una cuenta? <a href="/register">Regístrate</a>
-          </p>
-        </div>
+       
       </div>
 
       {showToast && (

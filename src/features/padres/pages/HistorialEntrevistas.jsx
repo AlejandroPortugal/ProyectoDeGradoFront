@@ -5,11 +5,12 @@ import { getMateria } from "../../materias/services/materia.service.jsx";
 import exportActas from "../../actas/utils/exportActas.jsx";
 import MenuPadres from "../components/MenuPadres.jsx";
 import { Paper, TablePagination, TextField, MenuItem } from "@mui/material";
+import { getSessionUser } from "../../../utils/session.js";
 
 const HistorialEntrevistas = () => {
     const [citas, setCitas] = useState([]);
     const [filteredCitas, setFilteredCitas] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);   
     const [error, setError] = useState(null);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -20,26 +21,25 @@ const HistorialEntrevistas = () => {
     });
     const [materias, setMaterias] = useState([]);
 
-    let idPadre = null;
-    let padreNombre = "";
-    try {
-        const user = JSON.parse(localStorage.getItem("user"));
-        idPadre =
-            user?.idPadre ??
-            user?.idpadre ??
-            user?.id_padre ??
-            user?.id;
-        padreNombre = `${user?.nombres || ""} ${user?.apellidopaterno || ""} ${user?.apellidomaterno || ""}`
-            .replace(/\s+/g, " ")
-            .trim();
-    } catch (err) {
-        console.error("Error al obtener el idPadre desde el localStorage:", err);
-        idPadre = null;
-    }
+    const sessionUser = useMemo(() => getSessionUser(), []);
+    const idPadre =
+        sessionUser?.idPadre ??
+        sessionUser?.idpadre ??
+        sessionUser?.id_padre ??
+        (sessionUser?.role === "Padre de Familia" ? sessionUser?.id : null);
+    const padreNombre = [
+        sessionUser?.nombres,
+        sessionUser?.apellidopaterno,
+        sessionUser?.apellidomaterno,
+    ]
+        .filter(Boolean)
+        .join(" ")
+        .replace(/\s+/g, " ")
+        .trim();
 
     useEffect(() => {
         if (!idPadre) {
-            setError("No se encontró el idPadre en el localStorage o está malformateado.");
+            setError("No se pudo identificar al padre de familia en la sesion actual.");
             setLoading(false);
             return;
         }

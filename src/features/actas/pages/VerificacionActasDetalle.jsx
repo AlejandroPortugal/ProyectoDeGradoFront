@@ -8,6 +8,7 @@ import {
   getActasReunionByEstudiante,
 } from '../services/actas.service.jsx';
 import { getEstudianteById } from '../../estudiantes/services/Estudiante.service.jsx';
+import { getUsuarios } from '../../users/services/users.service.jsx';
 import './VerificacionActas.css';
 
 const formatDate = (value) => {
@@ -43,6 +44,22 @@ const getDocenteName = (acta) =>
   acta?.usuariomodificacion ||
   'Sin registro';
 
+const getModifierDate = (acta) =>
+  acta?.fechamodificacion ??
+  acta?.fecha_modificacion ??
+  acta?.fechadeactualizacion ??
+  acta?.fechaactualizacion ??
+  acta?.updatedAt ??
+  acta?.updated_at ??
+  null;
+
+const getModifierUserId = (acta) =>
+  acta?.usuariomodificacion ??
+  acta?.usuario_modificacion ??
+  acta?.idusuariomodificacion ??
+  acta?.id_usuario_modificacion ??
+  null;
+
 const VerificacionActasDetalle = () => {
   const { idestudiante } = useParams();
   const location = useLocation();
@@ -54,6 +71,7 @@ const VerificacionActasDetalle = () => {
   const [selectedActa, setSelectedActa] = useState(null);
   const [detailOpen, setDetailOpen] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
+  const [usersById, setUsersById] = useState({});
 
   const studentId = useMemo(() => Number(idestudiante), [idestudiante]);
 
@@ -101,6 +119,38 @@ const VerificacionActasDetalle = () => {
     loadActas();
   }, [loadActas]);
 
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        const response = await getUsuarios();
+        const users = Array.isArray(response.data) ? response.data : [];
+        const mappedUsers = users.reduce((acc, user) => {
+          const id =
+            user?.idusuario ??
+            user?.idUsuario ??
+            user?.id ??
+            user?.id_usuario ??
+            null;
+          if (!id) return acc;
+          const fullName = [user?.nombres, user?.apellidopaterno, user?.apellidomaterno]
+            .filter(Boolean)
+            .join(' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+          if (fullName) {
+            acc[String(id)] = fullName;
+          }
+          return acc;
+        }, {});
+        setUsersById(mappedUsers);
+      } catch (error) {
+        console.error('Error al obtener los usuarios para auditoria:', error);
+      }
+    };
+
+    loadUsers();
+  }, []);
+
   const handleBack = () => {
     navigate('/verificacion-actas');
   };
@@ -126,6 +176,27 @@ const VerificacionActasDetalle = () => {
 
   const studentName = buildStudentName(student) || 'Estudiante no identificado';
 
+  const modifierUserName = useMemo(() => {
+    if (!selectedActa) return 'Sin registro';
+    const directName =
+      selectedActa?.usuario_modificacion_nombre ||
+      selectedActa?.usuariomodificacion_nombre ||
+      selectedActa?.usuarioModificacionNombre ||
+      selectedActa?.nombremodificacion ||
+      selectedActa?.nombreusuariomodificacion ||
+      null;
+    if (directName) return directName;
+
+    const modifierId = getModifierUserId(selectedActa);
+    if (!modifierId) return 'Sin registro';
+    return usersById[String(modifierId)] || `Usuario ${modifierId}`;
+  }, [selectedActa, usersById]);
+
+  const modifierDateText = useMemo(() => {
+    if (!selectedActa) return 'Sin registro';
+    return formatDate(getModifierDate(selectedActa));
+  }, [selectedActa]);
+
   const detailContent = selectedActa ? (
     <div className="verificacion-actas-detail">
       <div className="verificacion-actas-detail__grid">
@@ -148,17 +219,17 @@ const VerificacionActasDetalle = () => {
       </div>
 
       <section className="verificacion-actas-detail__section">
-        <h3>Descripcion principal</h3>
+        <h3>Descripcion actual</h3>
         <p>{selectedActa.descripcion || 'No existe una descripcion registrada.'}</p>
       </section>
 
       <section className="verificacion-actas-detail__section verificacion-actas-detail__section--compare">
         <div>
-          <h3>Descripcion de creacion</h3>
+          <h3>Descripcion de con el que se creo el acta</h3>
           <p>{selectedActa.descripcioncampo || 'No existe registro de cambios previos.'}</p>
         </div>
         <div>
-          <h3>Descripcion de modificacion</h3>
+          <h3>Descripcion de modificación</h3>
           <p>
             {selectedActa.descripcioncampoactualizado ||
               'No existe una actualizacion registrada para comparar.'}
@@ -166,12 +237,15 @@ const VerificacionActasDetalle = () => {
         </div>
       </section>
 
-      {selectedActa.usuariomodificacion && (
-        <section className="verificacion-actas-detail__section">
-          <h3>Usuario que modifico</h3>
-          <p>{selectedActa.usuariomodificacion}</p>
-        </section>
-      )}
+      <section className="verificacion-actas-detail__section">
+        <h3>Usuario que modifico</h3>
+        <p>{modifierUserName}</p>
+      </section>
+
+      <section className="verificacion-actas-detail__section">
+        <h3>Fecha de modificacion</h3>
+        <p>{modifierDateText}</p>
+      </section>
     </div>
   ) : null;
 

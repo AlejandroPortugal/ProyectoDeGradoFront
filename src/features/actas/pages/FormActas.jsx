@@ -39,6 +39,21 @@ const getHorarioPayload = (payload) => {
   return value || null;
 };
 
+const getCurrentLocalDate = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const parseDateAsLocal = (value) => {
+  if (!value || typeof value !== 'string') return null;
+  const [year, month, day] = value.split('-').map(Number);
+  if (!year || !month || !day) return null;
+  return new Date(year, month - 1, day);
+};
+
 function FormActas() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -58,7 +73,7 @@ function FormActas() {
     idreservarentrevista: '',
     idmotivo: '',
     idmateria: '',
-    fechadecreacion: new Date().toISOString().split('T')[0], 
+    fechadecreacion: getCurrentLocalDate(),
     descripcion: '',
     estado: true,
   });
@@ -218,8 +233,8 @@ function FormActas() {
 
   const formatFechaLarga = (fecha) => {
     if (!fecha) return '';
-    const parsedDate = new Date(fecha);
-    if (Number.isNaN(parsedDate.getTime())) return fecha;
+    const parsedDate = parseDateAsLocal(fecha);
+    if (!parsedDate || Number.isNaN(parsedDate.getTime())) return fecha;
     return parsedDate.toLocaleDateString('es-ES', {
       weekday: 'long',
       day: 'numeric',
@@ -393,7 +408,7 @@ function FormActas() {
       idestudiante: estudiante?.idestudiante || formData.idestudiante || '',
       idmotivo: autoMotivoId || '',
       idmateria: autoMateriaId || '',
-      fechadecreacion: new Date().toISOString().split('T')[0],
+      fechadecreacion: getCurrentLocalDate(),
       descripcion: '',
       estado: true,
     });
@@ -415,7 +430,11 @@ function FormActas() {
     const estadoEntrevista = location.state?.estadoEntrevista;
 
     try {
-      await createActaReunion({ ...formData, idreservarentrevista: reservaId });
+      const createResponse = await createActaReunion({ ...formData, idreservarentrevista: reservaId });
+      const createdActa = createResponse?.data || {};
+      const createdActaId = createdActa?.idacta ?? createdActa?.id ?? null;
+      const createdEstudianteId =
+        formData.idestudiante || estudiante?.idestudiante || location.state?.idestudiante || '';
 
       if (typeof estadoEntrevista === 'boolean') {
         try {
@@ -441,18 +460,22 @@ function FormActas() {
         idestudiante: estudiante?.idestudiante || '',
         idmotivo: '',
         idmateria: '',
-        fechadecreacion: new Date().toISOString().split('T')[0],
+        fechadecreacion: getCurrentLocalDate(),
         descripcion: '',
         estado: true,
       });
 
-      navigate('/listaEntrevistas', {
+      navigate('/verActas', {
         replace: true,
         state: {
-          fechaSeleccionada: location.state?.fechaSeleccionada || null,
-          idreservarentrevista: reservaId,
-          estadoEntrevista,
-          toastMessage: 'Entrevista actualizada con el acta.',
+          idestudiante: createdEstudianteId,
+          focusActa: {
+            idacta: createdActaId,
+            idreservarentrevista: reservaId,
+            fechadecreacion: formData.fechadecreacion,
+            descripcion: descripcionActual,
+          },
+          toastMessage: 'Acta creada correctamente. Mostrando la acta registrada.',
           toastType: 'success',
         },
       });

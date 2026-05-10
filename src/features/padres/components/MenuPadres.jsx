@@ -53,9 +53,6 @@ const MenuPadres = () => {
           <li className="menu-item" onClick={() => handleNavigation('/historialCitas')}>
             Historial de Citas
           </li>
-          <li className="menu-item" onClick={() => handleNavigation('/horarioEntrevistas')}>
-            Horario de entrevistas
-          </li>
           <li className="menu-item logout-item" onClick={handleLogout}>
             <span className="user-icon">&#128100;</span> Cerrar Sesión
           </li>
